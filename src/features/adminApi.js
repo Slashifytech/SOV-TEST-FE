@@ -714,9 +714,13 @@ export const editTeam = async (payload, id, userType) => {
     }
   }
 };
-export const deleteTeam = async (id) => {
+export const deleteTeam = async (id, userType) => {
   try {
-    const response = await apiurl.patch(`/auth/admin/delete-team-member/${id}`);
+    const response = await apiurl.patch(`/auth/admin/delete-team-member/${id}`,{}, {
+      params:{
+        userType: userType
+      }
+    });
     return response.data;
   } catch (error) {
     if (error.response) {

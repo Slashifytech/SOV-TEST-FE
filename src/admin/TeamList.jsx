@@ -51,9 +51,9 @@ const TeamList = () => {
 
     return () => clearTimeout(timer);
   }, []);
-  const deleteMember = async (id) => {
+  const deleteMember = async (id, userType) => {
     try {
-      const res = await deleteTeam(id);
+      const res = await deleteTeam(id, userType);
       dispatch(getAllTeamData({}));
 
       toast.success(res.message || "Member Deleted Successfully");
@@ -81,11 +81,11 @@ const TeamList = () => {
         </span>
         <div className="md:ml-[17%] sm:ml-[23%] pt-14 font-poppins bg-white pb-6">
           <p className="md:text-[28px] sm:text-[22px] font-bold text-sidebar mt-6 ml-9">
-            {role === "2" ? "Employee Directory" : "Team Members"}(
+            {role === "4" ? "Employee Directory" : "Team Members"}(
             {totalUsersCount})
           </p>
           <p className="font-normal text-body pr-[20%] text-[16px] ml-9">
-            {role === "2"
+            {role === "4"
               ? `Manage and view Employee details in one place.`
               : `Manage and view team members details in one place.`}{" "}
           </p>
@@ -97,7 +97,7 @@ const TeamList = () => {
               <CustomInput
                 className="h-11 md:w-96 sm:w-80 rounded-md text-body placeholder:px-3 pl-7 border border-[#E8E8E8] outline-none"
                 type="text"
-                placeHodler="Search Member Name, Phone Number, & Email"
+                placeHodler="Search by Name, Phone Number, & Email"
                 name="search"
                 value={search}
                 onChange={handleSearchChange}
@@ -110,14 +110,14 @@ const TeamList = () => {
           <Link
             onclick={handleEmptyForm}
             to={  
-           role === "2"
+           role === "4"
                 ? "/admin/province/add-employee"
                 : "/admin/add-member"
             }
             state={"passPage"}
           >
             <span className="bg-primary text-white rounded-md px-6 py-2 cursor-pointer text-[13px]">
-              {role === "2" ? "+ Add New Employee" : "+ Add New Member"}
+              {role === "4" ? "+ Add New Employee" : "+ Add New Member"}
             </span>
           </Link>
         </div>

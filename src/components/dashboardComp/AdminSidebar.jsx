@@ -55,7 +55,7 @@ const AdminSidebar = () => {
 
   const sidebarList = [
     { pathPage: "/admin/dashboard", icon: <BsPieChartFill />, label: "Dashboard", otherPath: "/admin/province/add-employee" },
-    { pathPage: "/admin/province/employee-lists", icon: <ImUsers />, label: "Employees" },
+    { pathPage: "/admin/province/employee-lists", icon: <ImUsers />, label: "Employees", otherPath: "/admin/edit-employee" },
     { pathPage: "/admin/partner-directory", icon: <FaHandsHelping />, label: "Assign Partners", otherPath: "/admin/add-partner",  otherPathThree: "/admin/partner-employee", otherPathTwo: "/admin/partner-employee-details"},
     { pathPage: "/admin/team-members", icon: <RiTeamFill />, label: "Team Members", otherPath: "/admin/add-member", otherPathTwo: "/admin/team-activity" },
     { pathPage: "/admin/institute", icon: <BsFillBuildingsFill />, label: "Institutions", otherPath: "/add-institute", otherPathTwo: "/institute-view" },

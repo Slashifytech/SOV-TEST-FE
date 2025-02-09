@@ -51,10 +51,10 @@ const PartnerList = () => {
 
     return () => clearTimeout(timer);
   }, []);
-  const deleteMember = async (id) => {
+  const deleteMember = async (id, userType) => {
     try {
-      const res = await deleteTeam(id);
-      dispatch(getAllTeamData({}));
+      const res = await deleteTeam(id, userType);
+      dispatch(fetchAdminPartnerData({ perPage, page, search, endpoint: `/auth/admin/get-partner-lists` }))
 
       toast.success(res.message || "Member Deleted Successfully");
   

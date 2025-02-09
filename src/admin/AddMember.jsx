@@ -323,7 +323,8 @@ const AddMember = () => {
       setDeletedFiles([]);
       dispatch(setEmptyMemberInput());
       navigate(
-        location.pathname === "/admin/province/add-employee"
+        location.pathname === "/admin/province/add-employee" ||
+          location.pathname === "/admin/edit-employee"
           ? "/admin/province/employee-lists"
           : "/admin/team-members"
       );

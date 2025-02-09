@@ -180,10 +180,6 @@ export const adminProfileData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getAdminProfileData();
-      console.log(response)
-      localStorage.setItem("country", response.data.residenceAddress.country)
-      localStorage.setItem("province", response.data.residenceAddress.state)
-
       return response;
     } catch (error) {
       return rejectWithValue(
@@ -632,6 +628,7 @@ const adminSlice = createSlice({
       .addCase(getAllTeamData.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || action.error.message;
+        state.getTeams = []
       })
       .addCase(getMemberProfile.pending, (state) => {
         state.status = "loading";

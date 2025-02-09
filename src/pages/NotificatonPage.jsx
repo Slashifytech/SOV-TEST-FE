@@ -87,51 +87,35 @@ const NotificationPage = () => {
       );
     }
   };
-
-  const fetchNotifications = useCallback((province, country) => {
+  const fetchNotifications = useCallback(() => {
     if (isLoading || !nextPage || noMoreNotifications) return;
-  
+
     setIsLoading(true);
     const eventName =
-      role === "0" || role === "1" || role === "4" || role === "5"
+      role === "0" || role === "1"
         ? "GET_NOTIFICATIONS_FOR_ADMIN"
+        : role === "4" || role === "5"
+        ? "GET_NOTIFICATIONS_FOR_PARTNER"
         : "GET_NOTIFICATIONS_FOR_USER";
-  
 
-    setTimeout(() => {
-      socketServiceInstance.socket?.emit(eventName, {
-        page: nextPage,
-        limit: 10,
-        state: province,
-        country: country,
-      });
-  
-      socketServiceInstance.socket?.on(eventName, (data) => {
-        if (data.notifications.length === 0) {
+    socketServiceInstance.socket?.emit(eventName, {
+      page: nextPage,
+      limit: 10,
+    });
+
+    socketServiceInstance.socket?.on(eventName, (data) => {
+      if (data.notifications.length === 0) {
+        setNoMoreNotifications(true);
+      } else {
+        dispatch(addAllNotifications(data));
+        if (!data.nextPage) {
           setNoMoreNotifications(true);
-        } else {
-          dispatch(addAllNotifications(data));
-          if (!data.nextPage) {
-            setNoMoreNotifications(true);
-          }
         }
-        setIsLoading(false);
-      });
-    }, 4000); 
-  }, [
-    dispatch,
-    isLoading,
-    nextPage,
-    noMoreNotifications,
-    role,
-    province,
-    country,
-  ]);
-  
-  useEffect(() => {
-    fetchNotifications(province, country);
-  }, [province, country]);
-  
+      }
+      setIsLoading(false);
+    });
+  }, [dispatch, isLoading, nextPage, noMoreNotifications, role]);
+
   const handleScroll = useCallback(() => {
     const bottom =
       window.innerHeight + window.scrollY >=
@@ -143,8 +127,10 @@ const NotificationPage = () => {
   }, [fetchNotifications, isLoading, noMoreNotifications]);
 
   useEffect(() => {
-    if (role === "0" || role === "1" || role === "4" || role === "5") {
+    if (role === "0" || role === "1") {
       socketServiceInstance.socket?.emit("NOTIFICATION_SEEN_BY_ADMIN", {});
+    } else if (role === "4" || role === "5") {
+      socketServiceInstance.socket?.emit("NOTIFICATION_SEEN_BY_PARTNER", {});
     } else {
       socketServiceInstance.socket?.emit("NOTIFICATION_SEEN_BY_USER", {});
     }
@@ -157,8 +143,13 @@ const NotificationPage = () => {
   }, [dispatch, handleScroll, role]);
 
   const handleMarkAllAsSeen = () => {
-    if (role === "0" || role === "1" || role === "4" || role === "5") {
+    if (role === "0" || role === "1") {
       socketServiceInstance.socket?.emit("NOTIFICATION_ALL_READ_BY_ADMIN", {});
+    } else if (role === "4" || role === "5") {
+      socketServiceInstance.socket?.emit(
+        "NOTIFICATION_ALL_READ_BY_PARTNER",
+        {}
+      );
     } else {
       socketServiceInstance.socket?.emit("NOTIFICATION_ALL_READ_BY_USER", {});
     }
@@ -176,12 +167,13 @@ const NotificationPage = () => {
           deletingNotification === notification._id ? "slide-out-right" : ""
         }`}
       >
+       {(role !== "4" && role !== "5") && (
         <span
           onClick={() => handleDeleteNotification(notification._id)}
           className="absolute right-5 text-[22px] text-body cursor-pointer top-3"
         >
           <RxCross2 />
-        </span>
+        </span>)}
         <p className="text-sidebar font-semibold">
           {notification.title === "RECEIVED_OFFER_LETTER_AGENT" ||
           notification.title === "RECEIVED_OFFER_LETTER_STUDENT"
@@ -279,12 +271,14 @@ const NotificationPage = () => {
             >
               Mark All as Seen
             </span>
-            <span
-              onClick={() => handleDeleteAllNotification(clearAllId)}
-              className="text-body bg-[#F2F5F7] px-6 py-2 rounded-md cursor-pointer"
-            >
-              Clear All
-            </span>
+            {(role !== "4" && role !== "5") && (
+              <span
+                onClick={() => handleDeleteAllNotification(clearAllId)}
+                className="text-body bg-[#F2F5F7] px-6 py-2 rounded-md cursor-pointer"
+              >
+                Clear All
+              </span>
+            )}
           </span>
           {notifications.length > 0 ? (
             renderNotifications(notifications)

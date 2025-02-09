@@ -32,37 +32,28 @@ class SocketService {
 
     // Handle connection success
     this.socket.on("connect", () => {
-      if (role === "0" || role === "1" || role === "4" || role === "5") {
-        console.log(store.getState().admin.getAdminProfile);
-        const province =
-          store.getState().admin.getAdminProfile?.data?.residenceAddress?.state || null;
-        const country =
-          store.getState().admin.getAdminProfile?.data?.residenceAddress?.country || null;
-        if (role === "4" || role === "5") {
-          if (!province && !country) {
-            console.log("Skipping socket emit: Both province and country are undefined");
-            return;
-          }
-        }
+      if (role === "0" || role === "1") {
         this.socket.emit("GET_UNREAD_COUNT", "emitForAdmin");
         this.socket.emit("GET_NOTIFICATIONS_FOR_ADMIN", {
           page: 1,
           limit: 10,
-          state: province,
-          country: country,
         });
-      
+      } else if (role === "4" || role === "5") {
+        this.socket.emit("GET_UNREAD_COUNT", "emitForPartner");
+        this.socket.emit("GET_NOTIFICATIONS_FOR_PARTNER", {
+          page: 1,
+          limit: 10,
+        });
       } else {
         this.socket.emit("GET_UNREAD_COUNT", "emitForUser");
         this.socket.emit("GET_NOTIFICATIONS_FOR_USER", { page: 1, limit: 10 });
       }
-      
 
-      console.log("Successfully connected to socket:", this.socket.id);
+      // console.log("Successfully connected to socket:", this.socket.id);
     });
 
     this.socket.on("onMessage", (message) => {
-      console.log("Received message from server:", message);
+      // console.log("Received message from server:", message);
     });
 
     this.socket.on("GET_NOTIFICATIONS_FOR_USER", (data) => {
@@ -70,11 +61,17 @@ class SocketService {
       store.dispatch(addAllNotifications(data));
     });
 
+    
     this.socket.on("GET_NOTIFICATIONS_FOR_ADMIN", (data) => {
       console.log("GET_NOTIFICATIONS_FOR_ADMIN:", data);
+      this.socket.emit("GET_UNREAD_COUNT", "emitForAdmin");
       store.dispatch(addAllNotifications(data));
     });
-
+    this.socket.on("GET_NOTIFICATIONS_FOR_PARTNER", (data) => {
+      console.log("GET_NOTIFICATIONS_FOR_PARTNER:", data);
+      this.socket.emit("GET_UNREAD_COUNT", "emitForPartner");
+      store.dispatch(addAllNotifications(data));
+    });
     //these three are for getting new notifications and appending them
     this.socket.on("GLOBAL_NOTIFICATION_STUDENT_ALERT", (data) => {
       console.log("GLOBAL_NOTIFICATION_STUDENT_ALERT:", data);
@@ -103,17 +100,22 @@ class SocketService {
       store.dispatch(addNewNotification(data));
       this.socket.emit("GET_UNREAD_COUNT", "emitForUser");
     });
-
+    this.socket.on("GLOBAL_NOTIFICATION_PARTNER_ALERT", (data) => {
+      console.log("GLOBAL_NOTIFICATION_PARTNER_ALERT:", data);
+      this.socket.emit("GET_UNREAD_COUNT", "emitForPartner");
+      store.dispatch(addNewNotification(data));
+    });
     this.socket.on("GLOBAL_NOTIFICATION_ADMIN_ALERT", (data) => {
       console.log("GLOBAL_NOTIFICATION_ADMIN_ALERT:", data);
-      store.dispatch(addNewNotification(data));
       this.socket.emit("GET_UNREAD_COUNT", "emitForAdmin");
+      store.dispatch(addNewNotification(data));
     });
 
     //this event is to get the notificationCount
     this.socket.on("GET_UNREAD_COUNT", (data) => {
       console.log("GET_UNREAD_COUN:", data);
       store.dispatch(updateNotificationCount(data));
+      
     });
 
     this.socket.on("NOTIFICATION_READ_STATUS_UPDATE", (data) => {

@@ -17,7 +17,7 @@ const MemberCard = ({
 }) => {
   const [isFuncOpen, setIsFuncOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
+  const deleteType = userType === "admin" ? "team" : userType
   const closeFunc = () => {
     setIsFuncOpen(false);
   };
@@ -122,7 +122,7 @@ const MemberCard = ({
         isFuncOpen={isFuncOpen}
         closeFunc={closeFunc}
         handleFunc={() => {
-          deleteteamData(defaultId.id);
+          deleteteamData(defaultId.id, deleteType);
         }}
         questionText="Are you sure to delete the member ?"
       />
