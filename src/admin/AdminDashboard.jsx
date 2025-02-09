@@ -400,7 +400,7 @@ const AdminDashboard = () => {
                   />
                 ))}
                 {cardData
-                  .filter((data) => !(getAdminProfile?.data?.role === "2" && data.label === "Tickets"))
+                  .filter((data) => !((getAdminProfile?.data?.role === "4" || getAdminProfile?.data?.role === "5") && data.label === "Tickets"))
                   .map((data, index) => (
                     <AdminDashCard
                       key={index}
