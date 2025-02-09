@@ -20,7 +20,7 @@ const LogoutPop = ({ isLogoutOpen, closeLogout }) => {
     if (role === "0" || role === "1") {
       navigate("/admin/role/auth/login");
     } else if( role ==="4" || role === "5" ){
-      navigate("/admin/province/login")
+      navigate("/province/login")
     } else {
       navigate("/login");
     }

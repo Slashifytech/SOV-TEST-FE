@@ -24,7 +24,7 @@ const StrictPartner = ({ children }) => {
     );
   }
 
-  const isAuthorizedRole = roleType === "2" ;
+  const isAuthorizedRole = roleType === "4" ;
 
   if (!isAuthorizedRole || !authToken) {
     return <Navigate to="/admin/role/auth/login" replace={true} />;

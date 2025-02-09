@@ -35,7 +35,11 @@ const VisaStatusComponent = ({ studentId }) => {
     role === "3"
       ? studentInfoData?.data?.studentInformation?._id ||
         location?.state?.notifyId
-      : role === "2" || role === "0" || role === "1" || role ==="4" || role === "5" 
+      : role === "2" ||
+        role === "0" ||
+        role === "1" ||
+        role === "4" ||
+        role === "5"
       ? studentId
       : null;
 
@@ -106,18 +110,28 @@ const VisaStatusComponent = ({ studentId }) => {
         let receiverType = "";
         let pathData = "";
         let path = "";
+        let stateData = "";
+        let countryData = "";
         if (flag === "rejectedbyembassy") {
           if (getStudentDataById.studentInformation.studentId) {
             notificationTitle = "VISA_REJECTED_BY_EMBASSY_STUDENT";
             notificationMessage = `Visa Application ${visaStatus?.applicationId} has been rejected by the Embassy for ${visaStatus?.visa?.country}. Rejection Reason: ${message}`;
             receiverType = "STUDENT";
             path = "/student/visa-update";
+            countryData =
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.country;
+            stateData =
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.state;
           } else {
             notificationTitle = "VISA_REJECTED_BY_EMBASSY_AGENT";
             notificationMessage = `Visa Application ${visaStatus?.applicationId} has been rejected by the embassy for ${getStudentDataById?.studentInformation?.personalInformation?.firstName} ${getStudentDataById?.studentInformation?.personalInformation?.lastName} (${getStudentDataById?.studentInformation?.stId}) for ${visaStatus?.visa?.country}. Rejection Reason: ${message} `;
             receiverType = "AGENT";
             path = "/student-profile";
             pathData = getStudentDataById?.studentInformation?._id;
+            countryData = agentData?.agentCountry;
+            stateData = agentData?.agentState;
           }
         } else if (flag === "approvedbyembassy") {
           if (getStudentDataById.studentInformation.studentId) {
@@ -125,12 +139,20 @@ const VisaStatusComponent = ({ studentId }) => {
             notificationMessage = `Visa Application ${visaStatus?.applicationId} has been approved by the Embassy for ${visaStatus?.visa?.country}.`;
             receiverType = "STUDENT";
             path = "/student/visa-update";
+            countryData =
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.country;
+            stateData =
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.state;
           } else {
             notificationTitle = "VISA_APPROVED_BY_EMBASSY_AGENT";
             notificationMessage = `Visa Application ${visaStatus?.applicationId} has been approved by the embassy for ${getStudentDataById?.studentInformation?.personalInformation?.firstName} ${getStudentDataById?.studentInformation?.personalInformation?.lastName} (${getStudentDataById?.studentInformation?.stId}) for ${visaStatus?.visa?.country}.`;
             receiverType = "AGENT";
             path = "/student-profile";
             pathData = getStudentDataById?.studentInformation?._id;
+            countryData = agentData?.agentCountry;
+            stateData = agentData?.agentState;
           }
         }
 
@@ -141,6 +163,9 @@ const VisaStatusComponent = ({ studentId }) => {
             path: path,
             pathData: { studentId: pathData },
             recieverId: visaStatus?.userId || "",
+            country: CountryData,
+            state: stateData,
+            sendTo: "partner",
           };
 
           const notificationEvent =
@@ -194,6 +219,9 @@ const VisaStatusComponent = ({ studentId }) => {
               studentId: getStudentDataById?.studentInformation?._id,
             },
             recieverId: getStudentDataById.studentInformation.agentId,
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner",
           };
 
           socketServiceInstance.socket.emit(
@@ -215,6 +243,13 @@ const VisaStatusComponent = ({ studentId }) => {
               studentId: getStudentDataById?.studentInformation?._id,
             },
             recieverId: getStudentDataById.studentInformation.studentId,
+            country:
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.country,
+            state:
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.state,
+            sendTo: "partner",
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_ADMIN_TO_STUDENT",
@@ -242,20 +277,22 @@ const VisaStatusComponent = ({ studentId }) => {
           //from agent to admin
           const notificationData = {
             title: " DEFERMATION_BY_AGENT",
-            message: `${agentData?.companyDetails?.businessName} ${agentData?.agId} requested for deferment ${visaStatus?.applicationId} for the ${
-              studentData?.studentInformation?.personalInformation
-                .firstName +
+            message: `${agentData?.companyDetails?.businessName} ${
+              agentData?.agId
+            } requested for deferment ${visaStatus?.applicationId} for the ${
+              studentData?.studentInformation?.personalInformation.firstName +
               " " +
-              studentData?.studentInformation?.personalInformation
-                .lastName
-            } ${
-              studentData?.studentInformation?.stId
-            } `,
+              studentData?.studentInformation?.personalInformation.lastName
+            } ${studentData?.studentInformation?.stId} `,
             path: "/student-profile",
+
             pathData: {
               studentId: studentData?.studentInformation?._id,
             },
             recieverId: studentData?.studentInformation?.agentId,
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner",
           };
 
           socketServiceInstance.socket.emit(
@@ -266,13 +303,13 @@ const VisaStatusComponent = ({ studentId }) => {
           console.error("Socket connection failed, cannot emit notification.");
         }
       }
-      if ( studentInfoData?.data?.studentInformation?.stId) {
+      if (studentInfoData?.data?.studentInformation?.stId) {
         if (socketServiceInstance.isConnected()) {
           //from student to admin
           const notificationData = {
             title: " DEFERMATION_BY_STUDENT",
             message: `${
-               studentInfoData?.data?.studentInformation?.personalInformation
+              studentInfoData?.data?.studentInformation?.personalInformation
                 .firstName +
               " " +
               studentInfoData?.data?.studentInformation?.personalInformation
@@ -284,7 +321,14 @@ const VisaStatusComponent = ({ studentId }) => {
             pathData: {
               studentId: studentInfoData?.data?.studentInformation?._id,
             },
-            recieverId:studentInfoData?.data?.studentInformation?._id,
+            recieverId: studentInfoData?.data?.studentInformation?._id,
+            country:
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.country,
+            state:
+              studentInfoData?.data?.studentInformation?.residenceAddress
+                ?.state,
+            sendTo: "partner",
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_STUDENT_TO_ADMIN",
@@ -309,14 +353,18 @@ const VisaStatusComponent = ({ studentId }) => {
           </span>
 
           <div className="ml-[17%] pt-16 pb-5 bg-white border-b-2 border-[#E8E8E8]">
-          <span className="flex  items-center justify-between">
-            <p className="text-[28px] font-bold text-sidebar mt-6 md:ml-9 sm:ml-20">
-             Visa Lodgement Status
-            </p>
-            <span onClick={handleOpenOpt} className="bg-primary cursor-pointer text-white rounded-md px-6 py-2 mr-6 mt-6">Apply Visa Lodgement</span>
-          </span>
-         
-        </div>
+            <span className="flex  items-center justify-between">
+              <p className="text-[28px] font-bold text-sidebar mt-6 md:ml-9 sm:ml-20">
+                Visa Lodgement Status
+              </p>
+              <span
+                onClick={handleOpenOpt}
+                className="bg-primary cursor-pointer text-white rounded-md px-6 py-2 mr-6 mt-6"
+              >
+                Apply Visa Lodgement
+              </span>
+            </span>
+          </div>
         </>
       ) : (
         ""
@@ -349,11 +397,13 @@ const VisaStatusComponent = ({ studentId }) => {
             loading="lazy"
           />
           <p className="text-sidebar text-[22px] font-semibold mt-3 text-center">
-            {role === "0" || role === "1" || role ==="4" || role === "5"  ? null : "Your"} Visa lodgement
-            Application is under review.
+            {role === "0" || role === "1" || role === "4" || role === "5"
+              ? null
+              : "Your"}{" "}
+            Visa lodgement Application is under review.
           </p>
           <p className="text-sidebar text-[16px] text-center font-light mt-3">
-            {role === "0" || role === "1" || role ==="4" || role === "5" 
+            {role === "0" || role === "1" || role === "4" || role === "5"
               ? null
               : "We’ll notify you with updates. Please ensure all required documents are submitted and check your email for further requests."}
           </p>
@@ -375,7 +425,7 @@ const VisaStatusComponent = ({ studentId }) => {
             }}
             loading="lazy"
           />
-          {role === "0" || role === "1" || role ==="4" || role === "5"  ? (
+          {role === "0" || role === "1" || role === "4" || role === "5" ? (
             <>
               <p className="text-sidebar text-[15px] font-normal mt-3 text-center">
                 Visa lodegement has been approved from admin side. Review the
@@ -428,10 +478,11 @@ const VisaStatusComponent = ({ studentId }) => {
             }}
             loading="lazy"
           />
-          {role === "0" || role === "1" || role ==="4" || role === "5"  ? (
+          {role === "0" || role === "1" || role === "4" || role === "5" ? (
             <>
               <p className="text-sidebar text-[22px] font-semibold mt-3 text-center">
-              Visa application has been rejected by embassy for this student and student requested for deferment.
+                Visa application has been rejected by embassy for this student
+                and student requested for deferment.
               </p>
             </>
           ) : (
@@ -482,79 +533,83 @@ const VisaStatusComponent = ({ studentId }) => {
         </div>
       ) : visaStatus?.visa?.status === "withdrawalrequest" ? (
         <>
-          {role === "0" || role === "1" || role ==="4" || role === "5"   && (
-            <div
-              className={`bg-white flex flex-col rounded-md justify-center items-center md:mx-52 py-9 font-poppins px-14 mb-20 ${
-                location.pathname === "/student/visa-update"
-                  ? "md:mx-20 md:ml-[28%] sm:mx-9 sm:ml-[28%]  mt-16 "
-                  : null
-              } `}
-            >
-              <p className="text-sidebar text-[22px] font-semibold mt-3 text-center">
-                Visa lodgement Application Rejected
-              </p>
-              <p className="text-sidebar text-[16px] text-center font-light mt-3">
-                Visa Application has been rejected from embassy for this
-                student. and User requested for withdraw the amount.
-              </p>
-              <span
-                onClick={handleWithdrawalData}
-                className="text-primary flex flex-row items-center font-semibold gap-2 text-[16px] rounded-md px-6 py-2  cursor-pointer mt-4"
+          {role === "0" ||
+            role === "1" ||
+            role === "4" ||
+            (role === "5" && (
+              <div
+                className={`bg-white flex flex-col rounded-md justify-center items-center md:mx-52 py-9 font-poppins px-14 mb-20 ${
+                  location.pathname === "/student/visa-update"
+                    ? "md:mx-20 md:ml-[28%] sm:mx-9 sm:ml-[28%]  mt-16 "
+                    : null
+                } `}
               >
-                <span>View Withdrawal Form</span>
-                <span>
-                  <FaRegEye />
+                <p className="text-sidebar text-[22px] font-semibold mt-3 text-center">
+                  Visa lodgement Application Rejected
+                </p>
+                <p className="text-sidebar text-[16px] text-center font-light mt-3">
+                  Visa Application has been rejected from embassy for this
+                  student. and User requested for withdraw the amount.
+                </p>
+                <span
+                  onClick={handleWithdrawalData}
+                  className="text-primary flex flex-row items-center font-semibold gap-2 text-[16px] rounded-md px-6 py-2  cursor-pointer mt-4"
+                >
+                  <span>View Withdrawal Form</span>
+                  <span>
+                    <FaRegEye />
+                  </span>
                 </span>
-              </span>
-              <span
-                onClick={withdrawalReqAction}
-                className="bg-primary text-white rounded-md px-6 py-2 text-[14px] cursor-pointer mt-4"
-              >
-                Update Withdrawal Complete
-              </span>
-            </div>
-          )}
+                <span
+                  onClick={withdrawalReqAction}
+                  className="bg-primary text-white rounded-md px-6 py-2 text-[14px] cursor-pointer mt-4"
+                >
+                  Update Withdrawal Complete
+                </span>
+              </div>
+            ))}
 
-          {role === "2" || role === "3"  && (
-            <div
-              className={`bg-white flex flex-col rounded-md justify-center items-center md:mx-52 py-9 font-poppins px-14 mb-20 ${
-                location.pathname === "/student/visa-update"
-                  ? "md:mx-20 md:ml-[28%] sm:mx-9 sm:ml-[28%]  mt-16 "
-                  : null
-              } `}
-            >
-              <img
-                src={urAdmin}
-                alt="img"
-                className="w-40 h-36"
-                onError={(e) => {
-                  e.target.src = profileSkeleton;
-                }}
-                loading="lazy"
-              />
-              <p className="text-sidebar text-[22px] font-semibold mt-3 text-center">
-                Your withdrawal request is under process!
-              </p>
-              <p className="text-sidebar text-[16px] text-center font-light mt-3 mx-9">
-                Your withdrawal request will be processed within 45-50 business
-                days. You will receive a confirmation email once your request
-                has been processed.
-              </p>
-              <p className="text-sidebar text-[16px] text-center font-light mt-3 ">
-                All good things take time. <br />
-                Thanks for your patience!
-              </p>
-              <span
-                onClick={handleWithdrawalData}
-                className="text-primary flex flex-row items-center font-semibold gap-2 text-[16px] rounded-md px-6 py-2  cursor-pointer mt-4"
+          {role === "2" ||
+            (role === "3" && (
+              <div
+                className={`bg-white flex flex-col rounded-md justify-center items-center md:mx-52 py-9 font-poppins px-14 mb-20 ${
+                  location.pathname === "/student/visa-update"
+                    ? "md:mx-20 md:ml-[28%] sm:mx-9 sm:ml-[28%]  mt-16 "
+                    : null
+                } `}
               >
-                <span>View Withdrawal Form</span>
-                <span>
-                  <FaRegEye />
+                <img
+                  src={urAdmin}
+                  alt="img"
+                  className="w-40 h-36"
+                  onError={(e) => {
+                    e.target.src = profileSkeleton;
+                  }}
+                  loading="lazy"
+                />
+                <p className="text-sidebar text-[22px] font-semibold mt-3 text-center">
+                  Your withdrawal request is under process!
+                </p>
+                <p className="text-sidebar text-[16px] text-center font-light mt-3 mx-9">
+                  Your withdrawal request will be processed within 45-50
+                  business days. You will receive a confirmation email once your
+                  request has been processed.
+                </p>
+                <p className="text-sidebar text-[16px] text-center font-light mt-3 ">
+                  All good things take time. <br />
+                  Thanks for your patience!
+                </p>
+                <span
+                  onClick={handleWithdrawalData}
+                  className="text-primary flex flex-row items-center font-semibold gap-2 text-[16px] rounded-md px-6 py-2  cursor-pointer mt-4"
+                >
+                  <span>View Withdrawal Form</span>
+                  <span>
+                    <FaRegEye />
+                  </span>
                 </span>
-              </span>
-            </div>
-          )}
+              </div>
+            ))}
         </>
       ) : visaStatus?.visa?.status === "withdrawalcomplete" ? (
         <>
@@ -601,7 +656,7 @@ const VisaStatusComponent = ({ studentId }) => {
                 <FaRegEye />
               </span>
             </span>
-            {role === "0" || role === "1" || role ==="4" || role === "5"   ? (
+            {role === "0" || role === "1" || role === "4" || role === "5" ? (
               ""
             ) : (
               <span
@@ -635,12 +690,12 @@ const VisaStatusComponent = ({ studentId }) => {
                 />
                 <p className="text-sidebar text-[22px] font-normal mt-3">
                   <span className="font-semibold">Congratulations!</span>{" "}
-                  {role === "0" || role === "1" || role ==="4" || role === "5" 
+                  {role === "0" || role === "1" || role === "4" || role === "5"
                     ? "Visa Application has been accepted from embassy for this student."
                     : "Your Visa Application has been accepted"}
                 </p>
               </span>
-              {role === "0" || role === "1" || role ==="4" || role === "5"  ? (
+              {role === "0" || role === "1" || role === "4" || role === "5" ? (
                 <p className="text-sidebar mt-3 text-[16px] font-light text-center">
                   Student has uploaded the PPR and Visa Stamp. Review it!{" "}
                 </p>
@@ -837,7 +892,7 @@ const VisaStatusComponent = ({ studentId }) => {
             Start your application now to begin the process and track your
             progress here.
           </p>
-          {role === "0" || role === "1" || role ==="4" || role === "5"   ? (
+          {role === "0" || role === "1" || role === "4" || role === "5" ? (
             ""
           ) : (
             <span

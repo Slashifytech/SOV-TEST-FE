@@ -22,8 +22,8 @@ const NotificationPage = () => {
   const { agentData } = useSelector((state) => state.agent);
   const { studentInfoData } = useSelector((state) => state.student);
   const { getAdminProfile } = useSelector((state) => state.admin);
- const province = role = "2" && !getAdminProfile?.data?._id ? agentData?.agentState : role === "3" && !getAdminProfile?.data?._id ? studentInfoData?.data?.studentInformation?.residenceAddress?.state : null
- const country = role = "2" && !getAdminProfile?.data?._id ? agentData?.agentCountry : role === "3" && !getAdminProfile?.data?._id ? studentInfoData?.data?.studentInformation?.residenceAddress?.state : null
+  const province = getAdminProfile?.data?.residenceAddress?.state;
+  const country = getAdminProfile?.data?.residenceAddress?.country;
   const [deletingNotification, setDeletingNotification] = useState(null);
   const studentId = studentInfoData?.data?.studentInformation?.studentId;
   const agentId = agentData?.agentId;
@@ -33,7 +33,7 @@ const NotificationPage = () => {
       ? studentId
       : role === "2"
       ? agentId
-      : role === "0" || role === "1" || role ==="4" || role === "5" 
+      : role === "0" || role === "1" || role === "4" || role === "5"
       ? adminId
       : null;
   const type = role == "3" || role == "2" ? "emitForUser" : "";
@@ -48,7 +48,7 @@ const NotificationPage = () => {
   const handleNotificationClick = (notification) => {
     if (!notification?.isRead) {
       let byAdmin = false;
-      if (role === "0" || role === "1" || role ==="4" || role === "5" ) {
+      if (role === "0" || role === "1" || role === "4" || role === "5") {
         byAdmin = true;
       }
       socketServiceInstance.socket?.emit("NOTIFICATION_IS_READ", {
@@ -69,7 +69,6 @@ const NotificationPage = () => {
       });
     }
   };
-
   const handleDeleteAllNotification = (recieverId) => {
     if (socketServiceInstance.socket) {
       socketServiceInstance.socket?.emit(
@@ -89,34 +88,50 @@ const NotificationPage = () => {
     }
   };
 
-  const fetchNotifications = useCallback(() => {
+  const fetchNotifications = useCallback((province, country) => {
     if (isLoading || !nextPage || noMoreNotifications) return;
-
+  
     setIsLoading(true);
     const eventName =
-      role === "0" || role === "1" || role ==="4" || role === "5" 
+      role === "0" || role === "1" || role === "4" || role === "5"
         ? "GET_NOTIFICATIONS_FOR_ADMIN"
         : "GET_NOTIFICATIONS_FOR_USER";
+  
 
-    socketServiceInstance.socket?.emit(eventName, {
-      page: nextPage,
-      limit: 10,
-      state: province,
-      country: country
-    });
-    socketServiceInstance.socket?.on(eventName, (data) => {
-      if (data.notifications.length === 0) {
-        setNoMoreNotifications(true);
-      } else {
-        dispatch(addAllNotifications(data));
-        if (!data.nextPage) {
+    setTimeout(() => {
+      socketServiceInstance.socket?.emit(eventName, {
+        page: nextPage,
+        limit: 10,
+        state: province,
+        country: country,
+      });
+  
+      socketServiceInstance.socket?.on(eventName, (data) => {
+        if (data.notifications.length === 0) {
           setNoMoreNotifications(true);
+        } else {
+          dispatch(addAllNotifications(data));
+          if (!data.nextPage) {
+            setNoMoreNotifications(true);
+          }
         }
-      }
-      setIsLoading(false);
-    });
-  }, [dispatch, isLoading, nextPage, noMoreNotifications, role]);
-
+        setIsLoading(false);
+      });
+    }, 4000); 
+  }, [
+    dispatch,
+    isLoading,
+    nextPage,
+    noMoreNotifications,
+    role,
+    province,
+    country,
+  ]);
+  
+  useEffect(() => {
+    fetchNotifications(province, country);
+  }, [province, country]);
+  
   const handleScroll = useCallback(() => {
     const bottom =
       window.innerHeight + window.scrollY >=
@@ -128,7 +143,7 @@ const NotificationPage = () => {
   }, [fetchNotifications, isLoading, noMoreNotifications]);
 
   useEffect(() => {
-    if (role === "0" || role === "1" || role ==="4" || role === "5" ) {
+    if (role === "0" || role === "1" || role === "4" || role === "5") {
       socketServiceInstance.socket?.emit("NOTIFICATION_SEEN_BY_ADMIN", {});
     } else {
       socketServiceInstance.socket?.emit("NOTIFICATION_SEEN_BY_USER", {});
@@ -142,7 +157,7 @@ const NotificationPage = () => {
   }, [dispatch, handleScroll, role]);
 
   const handleMarkAllAsSeen = () => {
-    if (role === "0" || role === "1" || role ==="4" || role === "5" ) {
+    if (role === "0" || role === "1" || role === "4" || role === "5") {
       socketServiceInstance.socket?.emit("NOTIFICATION_ALL_READ_BY_ADMIN", {});
     } else {
       socketServiceInstance.socket?.emit("NOTIFICATION_ALL_READ_BY_USER", {});
@@ -168,9 +183,11 @@ const NotificationPage = () => {
           <RxCross2 />
         </span>
         <p className="text-sidebar font-semibold">
-          {notification.title === "RECEIVED_OFFER_LETTER_AGENT" || notification.title === "RECEIVED_OFFER_LETTER_STUDENT"
+          {notification.title === "RECEIVED_OFFER_LETTER_AGENT" ||
+          notification.title === "RECEIVED_OFFER_LETTER_STUDENT"
             ? "RECEIVED DOCUMENT"
-            : notification.title === "DEFERMATION_BY_AGENT" || notification.title === "DEFERMATION_BY_STUDENT"
+            : notification.title === "DEFERMATION_BY_AGENT" ||
+              notification.title === "DEFERMATION_BY_STUDENT"
             ? "DEFERMENT"
             : notification.title
                 .replace(/_/g, " ")
@@ -196,22 +213,22 @@ const NotificationPage = () => {
           >
             Click to view{" "}
             {notification.title === "RECEIVED_OFFER_LETTER_AGENT" ||
-            notification.title === "RECEIVED_OFFER_LETTER_STUDENT" 
-          
+            notification.title === "RECEIVED_OFFER_LETTER_STUDENT"
               ? "> Go to Received document"
-              :   notification.title === "VISA_REJECTED_BY_EMBASSY_AGENT" ||
-            notification.title === "VISA_REJECTED_BY_EMBASSY_STUDENT" ||
+              : notification.title === "VISA_REJECTED_BY_EMBASSY_AGENT" ||
+                notification.title === "VISA_REJECTED_BY_EMBASSY_STUDENT" ||
                 notification.title === "VISA_APPROVED_BY_EMBASSY_AGENT" ||
                 notification.title === "VISA_APPROVED_BY_EMBASSY_STUDENT" ||
                 notification.title === "STUDENT_REQUESTED_AMOUNT_WITHDRAWAL" ||
                 notification.title === "AGENT_REQUESTED_AMOUNT_WITHDRAWAL" ||
                 notification.title === "AGENT_WITHDRAWAL_COMPLETE" ||
                 notification.title === "STUDENT_WITHDRAWAL_COMPLETE" ||
-
                 notification.title === "AGENT_STUDENT_VISA_STAMP" ||
                 notification.title === "STUDENT_STUDENT_VISA_STAMP" ||
                 notification.title === "DEFERMATION_BY_AGENT" ||
-                notification.title === "DEFERMATION_BY_STUDENT" ? "> Go to Visa Status" : null}
+                notification.title === "DEFERMATION_BY_STUDENT"
+              ? "> Go to Visa Status"
+              : null}
           </Link>
         ) : (
           <a
@@ -239,7 +256,7 @@ const NotificationPage = () => {
             <Sidebar />
           ) : role === "2" ? (
             <AgentSidebar />
-          ) : role === "0" || role === "1" || role ==="4" || role === "5"  ? (
+          ) : role === "0" || role === "1" || role === "4" || role === "5" ? (
             <AdminSidebar />
           ) : null}
         </span>

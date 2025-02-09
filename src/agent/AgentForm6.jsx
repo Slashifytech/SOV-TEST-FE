@@ -160,15 +160,21 @@ const AgentForm6 = ({hide, handleCancel, updateData, adminId, agentId}) => {
           const notificationData = {
             title: " AGENT_REGISTERED_FOR_APPROVAL",
             message: `${agentData?.companyDetails?.businessName} ${agentData?.agId} Agent registered for approval.
-`,
+`,           
             path:"/admin/approvals",
             recieverId: "",
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
+
           };
   
           socketServiceInstance.socket.emit(
             "NOTIFICATION_AGENT_TO_ADMIN",
-            notificationData
+            notificationData,
+            
           );
+     
         } else {
           console.error("Socket connection failed, cannot emit notification.");
         }

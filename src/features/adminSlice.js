@@ -110,7 +110,6 @@ export const getAllTickets = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    console.log(updateTicketTab);
     try {
       const response = await getTickets(
         page,
@@ -181,6 +180,10 @@ export const adminProfileData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getAdminProfileData();
+      console.log(response)
+      localStorage.setItem("country", response.data.residenceAddress.country)
+      localStorage.setItem("province", response.data.residenceAddress.state)
+
       return response;
     } catch (error) {
       return rejectWithValue(
@@ -718,6 +721,7 @@ const adminSlice = createSlice({
       .addCase(fetchAdminPartnerData.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || action.error.message;
+        state.PartnersData = action.payload
       })
       .addCase(fetchAdminProfileById.pending, (state) => {
         state.status = "loading";

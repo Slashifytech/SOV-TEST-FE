@@ -42,7 +42,7 @@ function App() {
         }
 
         await socketServiceInstance.connectToSocket(
-          "https://sovtest.slashifytech.in/",
+          "http://localhost:8080/",
           // "http://localhost:5173/",
 
           data

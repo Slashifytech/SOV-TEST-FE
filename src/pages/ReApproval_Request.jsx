@@ -51,6 +51,9 @@ const ReApproval_Request = () => {
             message: `${agentData?.companyDetails?.businessName} ${agentData?.agId} has deleted the profile and registered again as an agent on the portal. Request for reapproval `,
             path: "/admin/approvals",
             recieverId: "",
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
           };
 
           socketServiceInstance.socket.emit(
@@ -77,6 +80,9 @@ const ReApproval_Request = () => {
             } has deleted the profile and registered again as an student on the portal. Request for reapproval`,
             path: "/admin/approvals",
             recieverId: "",
+            country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+            state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_STUDENT_TO_ADMIN",

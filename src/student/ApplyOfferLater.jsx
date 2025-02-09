@@ -585,6 +585,9 @@ const ApplyOfferLater = () => {
             appId: "",
             ticId: "",
             recieverId: agentData?._id,
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
           };
 
           socketServiceInstance.socket.emit(
@@ -613,6 +616,9 @@ const ApplyOfferLater = () => {
             }.`,
             path: "/admin/applications-review",
             recieverId: "",
+            country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+            state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+            sendTo: "partner"
           };
 
           socketServiceInstance.socket.emit(

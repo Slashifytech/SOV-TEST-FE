@@ -151,6 +151,9 @@ const Form3 = ({
   `,
               path:"/admin/approvals",
               recieverId: "",
+              country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+              state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+              sendTo: "partner"
             };
     
             socketServiceInstance.socket.emit(

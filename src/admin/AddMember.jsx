@@ -292,6 +292,7 @@ const AddMember = () => {
             : location.pathname === "/admin/province/add-employee"
             ? "5"
             : "1",
+
         residenceAddress: {
           address: memberData.address,
           country: memberData.country,
@@ -305,7 +306,15 @@ const AddMember = () => {
 
       const res =
         location?.state?.edit === "edit"
-          ? await editTeam(payload, id)
+          ? await editTeam(
+              payload,
+              id,
+              location.pathname === "/admin/add-partner"
+                ? "partner"
+                : location.pathname === "/admin/province/add-employee"
+                ? "team"
+                : "employee"
+            )
           : await addTeam(payload);
 
       dispatch(getAllTeamData());
@@ -599,7 +608,7 @@ const AddMember = () => {
                 name="country"
                 onChange={(e) => handleCountryChange(e)}
                 value={memberData.country}
-                className={`border border-gray-300 rounded-lg text-secondary px-3 py-2 outline-none w-full bg-input`}
+                className={`border border-gray-300 rounded-lg text-[14px] text-secondary px-3 py-2 outline-none w-full bg-input`}
               >
                 <option value="">Select a country</option>
                 {countryState.map((item, index) => (
@@ -621,8 +630,8 @@ const AddMember = () => {
                 name="state"
                 value={memberData.state}
                 onChange={handleInput}
-                disabled={!memberData.state}
-                className={`border border-gray-300 rounded-lg text-secondary px-3 py-2 outline-none w-full bg-input`}
+                disabled={!memberData.country}
+                className={`border border-gray-300 rounded-lg text-[14px] text-secondary px-3 py-2 outline-none w-full bg-input`}
               >
                 <option value="">Select a state</option>
                 {addressFilteredStates.map((state, index) => (

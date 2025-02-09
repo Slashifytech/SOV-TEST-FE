@@ -12,6 +12,7 @@ class SocketService {
   constructor() {
     this.socket = null;
   }
+
   async connectToSocket(hostName, encryptData) {
     if (this.socket) {
       console.log("Socket is already connected");
@@ -31,13 +32,31 @@ class SocketService {
 
     // Handle connection success
     this.socket.on("connect", () => {
-      if (role === "0" || role === "1" || role ==="4" || role === "5" ) {
+      if (role === "0" || role === "1" || role === "4" || role === "5") {
+        console.log(store.getState().admin.getAdminProfile);
+        const province =
+          store.getState().admin.getAdminProfile?.data?.residenceAddress?.state || null;
+        const country =
+          store.getState().admin.getAdminProfile?.data?.residenceAddress?.country || null;
+        if (role === "4" || role === "5") {
+          if (!province && !country) {
+            console.log("Skipping socket emit: Both province and country are undefined");
+            return;
+          }
+        }
         this.socket.emit("GET_UNREAD_COUNT", "emitForAdmin");
-        this.socket.emit("GET_NOTIFICATIONS_FOR_ADMIN", { page: 1, limit: 10 });
+        this.socket.emit("GET_NOTIFICATIONS_FOR_ADMIN", {
+          page: 1,
+          limit: 10,
+          state: province,
+          country: country,
+        });
+      
       } else {
         this.socket.emit("GET_UNREAD_COUNT", "emitForUser");
         this.socket.emit("GET_NOTIFICATIONS_FOR_USER", { page: 1, limit: 10 });
       }
+      
 
       console.log("Successfully connected to socket:", this.socket.id);
     });
@@ -72,7 +91,7 @@ class SocketService {
       localStorage.removeItem("form");
       localStorage.removeItem("userAuthToken");
 
-      if (role === "0" || role === "1" || role ==="4" || role === "5" ) {
+      if (role === "0" || role === "1" || role === "4" || role === "5") {
         window.location.href = "/admin/role/auth/login";
       } else {
         window.location.href = "/login";

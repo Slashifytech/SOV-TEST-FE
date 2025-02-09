@@ -52,9 +52,13 @@ export const chngeApplicationStatus = async (id, status, section, message) => {
   const role = localStorage.getItem("role");
   try {
     const path =
-      role === "0" || role === "2" || role === "3" ||role === "4" || role === "5"
+      role === "0" ||
+      role === "2" ||
+      role === "3" ||
+      role === "4" ||
+      role === "5"
         ? "/admin/change-application-status"
-        : role === "1" 
+        : role === "1"
         ? "/admin/change-application-status-subadmin"
         : null;
     const response = await apiurl.patch(`${path}/${id}`, {
@@ -686,11 +690,16 @@ export const addTeam = async (payload) => {
     }
   }
 };
-export const editTeam = async (payload, id) => {
+export const editTeam = async (payload, id, userType) => {
   try {
     const response = await apiurl.put(
       `/auth/admin/edit-team-member/${id}`,
-      payload
+      payload,
+      {
+        params: {
+          userType: userType,
+        },
+      }
     );
     return response.data;
   } catch (error) {
@@ -945,7 +954,7 @@ export const AlladminPartner = async (
   }
 };
 export const profileById = async (userId) => {
-  console.log(userId)
+  console.log(userId);
 
   try {
     const response = await apiurl.get("/auth/admin/get-one-profile", {

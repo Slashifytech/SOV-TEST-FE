@@ -416,6 +416,9 @@ const courseFeeApplication = () => {
             } ${studentData?.studentInformation?.stId}`,
             path: "/admin/applications-review",
             recieverId: "",
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_AGENT_TO_ADMIN",
@@ -448,6 +451,9 @@ const courseFeeApplication = () => {
             studentName: courseFee.personalDetails.fullName,
             path: "/admin/applications-review",
             recieverId: agentData?._id,
+            country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+            state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+            sendTo: "partner"
           };
 
           socketServiceInstance.socket.emit(
