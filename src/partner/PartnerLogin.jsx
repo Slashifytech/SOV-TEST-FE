@@ -128,13 +128,13 @@ const PartnerLogin = () => {
                     <div className="flex justify-center space-x-6 my-4">
                       <button
                         onClick={() => handleTabChange("4")}
-                        className={`px-4 py-2 rounded-md w-36 ${
+                        className={`px-4 py-2 rounded-md w-52 ${
                           activeTab === "4"
                             ? "bg-primary text-white"
                             : "bg-gray-200 text-secondary"
                         }`}
                       >
-                        Admin
+                     Partner Admin
                       </button>
                       <button
                         onClick={() => handleTabChange("5")}
@@ -144,7 +144,7 @@ const PartnerLogin = () => {
                             : "bg-gray-200 text-secondary"
                         }`}
                       >
-                       Employee
+                      Partner Employee
                       </button>
                     </div>
                     <div>

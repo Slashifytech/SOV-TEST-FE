@@ -297,6 +297,7 @@ const FileUpload = ({
   errorMessage = "Please use JPG, JPEG, PNG, and PDF format.",
   fileUrl, 
   maxFileSizeMB = 5,
+  imp
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
@@ -358,7 +359,7 @@ const FileUpload = ({
 
   return (
     <div className={`flex flex-col gap-2 font-poppins ${customClass}`}>
-      <label className="text-[14px] text-secondary">{label}</label>
+      <label className="text-[14px] text-secondary">{label} <span className="text-red-500">{imp ? "*": ""}</span></label>
       <div className="flex md:flex-row-reverse sm:flex-col items-center gap-2 ">
         <input
           type="file"

@@ -8,6 +8,7 @@ import { profileSkeleton } from "../assets";
 import { FaRegEye, FaRegIdCard } from "react-icons/fa";
 import { IoMdHome } from "react-icons/io";
 import Loader from "../components/Loader";
+import { formatDate } from './../constant/commonfunction';
 
 const PartnerEmployeeDetail = () => {
   const { profileById, loading } = useSelector((state) => state.admin);
@@ -119,12 +120,12 @@ const PartnerEmployeeDetail = () => {
                   </span>
                   <span className="font-light mt-4">Date of Joining</span>
                   <span className="font-medium">
-                    {profileById?.dateOfJoining || "NA"}
+                    {formatDate(profileById?.dateOfJoining) || "NA"}
                   </span>
 
                   <span className="font-light mt-4">Date of Birth</span>
                   <span className="font-medium">
-                    {profileById?.dob || "NA"}
+                    {formatDate(profileById?.dob) || "NA"}
                   </span>
                 </span>
               </div>

@@ -56,14 +56,15 @@ const PartnerList = () => {
       const res = await deleteTeam(id, userType);
       dispatch(fetchAdminPartnerData({ perPage, page, search, endpoint: `/auth/admin/get-partner-lists` }))
 
-      toast.success(res.message || "Member Deleted Successfully");
   
       if (socketServiceInstance.isConnected()) {
-        const data = { userId: id, reason: "team deleted from admin" };
+        const data = { userId: id, reason: "partner deleted from admin" };
         socketServiceInstance.socket.emit("DELETE_AUTH_TOKEN", data);
       } else {
         console.error("Socket connection failed, cannot emit notification.");
       }
+      toast.success(res.message || "Member Deleted Successfully");
+
     } catch (error) {
       console.log(error);
       toast.error(error.message || "something went wrong");
@@ -92,7 +93,7 @@ const PartnerList = () => {
               <CustomInput
                 className="h-11 md:w-96 sm:w-80 rounded-md text-body placeholder:px-3 pl-7 border border-[#E8E8E8] outline-none"
                 type="text"
-                placeHodler="Search Member Name, Phone Number, & Email"
+                placeHodler="Search by ID, Name, Phone Number, & Email"
                 name="search"
                 value={search}
                 onChange={handleSearchChange}
@@ -142,7 +143,7 @@ const PartnerList = () => {
                   defaultId={{
                     id: data._id,
                   }}
-                  stId={data?.teamId}
+                  stId={data?.teamId || data?.partnerId}
                   deleteteamData={deleteMember}
                   page={data?.pageCount}
                   edit={true}

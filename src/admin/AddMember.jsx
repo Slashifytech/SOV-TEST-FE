@@ -289,10 +289,9 @@ const AddMember = () => {
         roleType:
           location.pathname === "/admin/add-partner"
             ? "4"
-            : location.pathname === "/admin/province/add-employee"
+            : location.pathname === "/admin/province/add-employee" || location.pathname === "/admin/edit-employee"
             ? "5"
             : "1",
-
         residenceAddress: {
           address: memberData.address,
           country: memberData.country,
@@ -300,6 +299,9 @@ const AddMember = () => {
           city: memberData.city,
           zipcode: memberData.zipcode,
         },
+        ...(getAdminProfile?.data?.role === "4" && {
+          location: getAdminProfile?.data?.residenceAddress?.state,
+        }),
         ...(isEdit !== "edit" && { password: memberData.password }),
         ...(isEmailEdit !== "edit" && { email: memberData.email }),
       };
@@ -312,8 +314,8 @@ const AddMember = () => {
               location.pathname === "/admin/add-partner"
                 ? "partner"
                 : location.pathname === "/admin/province/add-employee"
-                ? "team"
-                : "employee"
+                ? "employee"
+                : "team"
             )
           : await addTeam(payload);
 
@@ -326,6 +328,8 @@ const AddMember = () => {
         location.pathname === "/admin/province/add-employee" ||
           location.pathname === "/admin/edit-employee"
           ? "/admin/province/employee-lists"
+          : location.pathname === "/admin/add-partner"
+          ? "/admin/partner-directory"
           : "/admin/team-members"
       );
     } catch (error) {
@@ -361,11 +365,7 @@ const AddMember = () => {
     }
   }, [getMember?.data]);
   useEffect(() => {
-    console.log("Checking getMember?.Data:", getMember?.Data);
-
     if (!getMember?.Data || getMember?.Data.length === 0) {
-      console.log("Resetting to add mode as getMember?.Data is empty");
-
       setMemberData({
         profilePicture: "",
         dob: "",
@@ -389,14 +389,21 @@ const AddMember = () => {
   }, [getMember?.Data, dispatch]);
 
   const handleCountryChange = (e) => {
-    const country = e.target.value;
+    const country = e;
     const selectedCountryData = countryState.find(
       (item) => item.country === country
     );
     const states = selectedCountryData ? selectedCountryData.states : [];
-    setMemberData((prev) => ({ ...prev, country, state: "" }));
+    setMemberData((prev) => ({ ...prev, country}));
     setAddressFilteredStates(states);
   };
+  useEffect(() => {
+    if (memberData.country) {
+      handleCountryChange(memberData.country);
+    }
+  }, [memberData.country]);
+  
+
   return (
     <>
       <Header />
@@ -607,7 +614,7 @@ const AddMember = () => {
               </p>
               <select
                 name="country"
-                onChange={(e) => handleCountryChange(e)}
+                onChange={(e) => handleCountryChange(e.target.value)}
                 value={memberData.country}
                 className={`border border-gray-300 rounded-lg text-[14px] text-secondary px-3 py-2 outline-none w-full bg-input`}
               >
@@ -631,10 +638,12 @@ const AddMember = () => {
                 name="state"
                 value={memberData.state}
                 onChange={handleInput}
-                disabled={!memberData.country}
+                // disabled={!memberData.country}
                 className={`border border-gray-300 rounded-lg text-[14px] text-secondary px-3 py-2 outline-none w-full bg-input`}
               >
-                <option value="">Select a state</option>
+                <option value="" hidden>
+                  {memberData?.state ? memberData?.state   : "Select State"}
+                </option>
                 {addressFilteredStates.map((state, index) => (
                   <option key={index} value={state}>
                     {state}

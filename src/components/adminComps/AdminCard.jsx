@@ -123,7 +123,7 @@ const AdminCard = ({
               {currentStatus === "approved" ? "Approved" : "Rejected"}
             </span>
           </span>
-        ) : role === "3" ? (
+        ) :  role === "5" ? (
           <></>
         ) : (
           <span className="flex flex-col items-center w-32  md:text-[14px] sm:text-[12px]">

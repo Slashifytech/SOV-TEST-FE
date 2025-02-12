@@ -163,7 +163,7 @@ const VisaStatusComponent = ({ studentId }) => {
             path: path,
             pathData: { studentId: pathData },
             recieverId: visaStatus?.userId || "",
-            country: CountryData,
+            country: countryData,
             state: stateData,
             sendTo: "partner",
           };

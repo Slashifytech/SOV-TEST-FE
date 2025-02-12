@@ -49,6 +49,9 @@ const CourseFeeEdit = () => {
             message: `${agentData?.companyDetails?.businessName} ${agentData?.agId}  has resubmitted the Course fee application  ${applicationDataById?.applicationId} for the student ${studentData?.studentInformation?.personalInformation?.firstName + studentData?.studentInformation?.personalInformation?.lastName} ${studentData?.studentInformation?.stId}  `,
             path: "/admin/applications-review",
             recieverId: "",
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
           };
 
           socketServiceInstance.socket.emit(
@@ -67,6 +70,9 @@ const CourseFeeEdit = () => {
             message: `${studentInfoData?.data?.studentInformation?.personalInformation.firstName + " " + studentInfoData?.data?.studentInformation?.personalInformation.lastName}  ${studentInfoData?.data?.studentInformation?.stId}  has resubmitted the course fee application   ${applicationDataById?.applicationId}  `,
             path: "/admin/applications-review",
             recieverId: "",
+            country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+            state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_STUDENT_TO_ADMIN",

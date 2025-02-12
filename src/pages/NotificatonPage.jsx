@@ -87,10 +87,13 @@ const NotificationPage = () => {
       );
     }
   };
-  const fetchNotifications = useCallback(() => {
-    if (isLoading || !nextPage || noMoreNotifications) return;
 
+  const fetchNotifications = useCallback(() => {
+    if (isLoading || noMoreNotifications) {
+      console.log("returning");
+    }
     setIsLoading(true);
+    console.log("fire");
     const eventName =
       role === "0" || role === "1"
         ? "GET_NOTIFICATIONS_FOR_ADMIN"
@@ -115,6 +118,10 @@ const NotificationPage = () => {
       setIsLoading(false);
     });
   }, [dispatch, isLoading, nextPage, noMoreNotifications, role]);
+  useEffect(() => {
+ 
+    fetchNotifications();
+  }, []);
 
   const handleScroll = useCallback(() => {
     const bottom =
@@ -167,13 +174,14 @@ const NotificationPage = () => {
           deletingNotification === notification._id ? "slide-out-right" : ""
         }`}
       >
-       {(role !== "4" && role !== "5") && (
-        <span
-          onClick={() => handleDeleteNotification(notification._id)}
-          className="absolute right-5 text-[22px] text-body cursor-pointer top-3"
-        >
-          <RxCross2 />
-        </span>)}
+        {role !== "4" && role !== "5" && (
+          <span
+            onClick={() => handleDeleteNotification(notification._id)}
+            className="absolute right-5 text-[22px] text-body cursor-pointer top-3"
+          >
+            <RxCross2 />
+          </span>
+        )}
         <p className="text-sidebar font-semibold">
           {notification.title === "RECEIVED_OFFER_LETTER_AGENT" ||
           notification.title === "RECEIVED_OFFER_LETTER_STUDENT"
@@ -271,7 +279,7 @@ const NotificationPage = () => {
             >
               Mark All as Seen
             </span>
-            {(role !== "4" && role !== "5") && (
+            {role !== "4" && role !== "5" && (
               <span
                 onClick={() => handleDeleteAllNotification(clearAllId)}
                 className="text-body bg-[#F2F5F7] px-6 py-2 rounded-md cursor-pointer"

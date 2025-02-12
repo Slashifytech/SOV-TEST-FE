@@ -302,7 +302,7 @@ export function CustomTableTwo({
             {tableHead.map((head) => (
               <th
                 key={head}
-                className="border-b border-blue-gray-100 bg-input p-4 "
+                className="border-b border-blue-gray-100 bg-input p-4  "
               >
                 <Typography
                   variant="small"
@@ -867,7 +867,6 @@ export function CustomTableFive({
   const ticketData = useSelector((state) => state.admin.ticketById);
   const test = null;
 
-  console.log(ticketData);
   const [isticketId, setTicketId] = useState();
   const role = localStorage.getItem("role");
   const handleOpen = (id) => {
@@ -1041,7 +1040,6 @@ export function CustomTableFive({
                     {row?.priority}
                   </Typography>
                 </td>
-                {console.log(row)}
                 <td className="p-4">
                   <Typography
                     as="a"
@@ -1418,7 +1416,6 @@ export function CustomTableEight({
       if (socketServiceInstance.isConnected()) {
         //from agent to admin
         const data = { userId: isStudentId, reason: "Removed by admin" };
-        console.log("fired", data);
 
         socketServiceInstance.socket.emit("DELETE_AUTH_TOKEN", data);
       } else {
@@ -1457,7 +1454,6 @@ export function CustomTableEight({
               })}
             </tr>
           </thead>
-          {console.log(tableRows)}
           <tbody>
             {tableRows.map((row, index) => (
               <tr key={index} className="even:bg-blue-gray-50/50">
@@ -1471,7 +1467,6 @@ export function CustomTableEight({
                     {row.sno}
                   </Typography>
                 </td>
-                {console.log(row)}
 
                 <td className="p-4">
                   <Typography
@@ -1531,7 +1526,6 @@ export function CustomTableEight({
                     </Link>
                   </Typography>
                 </td>
-                {console.log(row?.studentId)}
 
                 {row.viewList && (
                   <td className="p-4">
@@ -1814,7 +1808,6 @@ export function CustomTableTen({
                     {row.data?.popularCourses || "__"}
                   </Typography>
                 </td>
-                {console.log(row?.data?.popularCourses)}
                 <td className="p-4">
                   <Typography
                     variant="small"
@@ -2504,7 +2497,6 @@ export function CustomTableFifteen({ tableHead = [], tableRows = [], icon, actio
                     color="blue-gray"
                     className="font-medium"
                   >
-                  {console.log(row?.data?._id)}
                     <Link
                       to="/visa/edit"
                       state={row?.data?._id}

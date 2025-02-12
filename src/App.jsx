@@ -18,7 +18,6 @@ import {
   getConnectionDetails,
 } from "./features/getConnectionDetails";
 import socketServiceInstance from "./services/socket";
-import { io } from "socket.io-client";
 import { adminProfileData, getMemberProfile } from "./features/adminSlice";
 import { startTokenHeartbeat } from "./services/tokenCheck";
 
@@ -29,22 +28,37 @@ function App() {
 
   const { prefCountryOption, courses, countryOption, countryState } =
     useSelector((state) => state.general);
+  const { agentData } = useSelector((state) => state.agent);
+  const { studentInfoData } = useSelector((state) => state.student);
+
+  const { getAdminProfile } = useSelector((state) => state.admin);
+  const adminRole = getAdminProfile?.data?.role;
+  const userRole = agentData?.companyDetails
+    ? "2"
+    : studentInfoData?.data?.studentInformation
+    ? "3"
+    : null;
   useEffect(() => {
+    if (!socketServiceInstance) {
+      console.log("role not found", userRole);
+      return;
+    }
+
     let socket;
 
     const initializeSocketConnection = async () => {
       try {
         let data;
-        if (role === "0" || role === "1" || role === "4" || role === "5") {
+        if (["0", "1", "4", "5"].includes(adminRole)) {
           data = await getAdminConnectionDetails();
-        } else if (role === "2" || role === "3") {
+        } else if (["2", "3"].includes(userRole)) {
           data = await getConnectionDetails();
         }
 
-        await socketServiceInstance.connectToSocket(
-          "http://localhost:8080/",
-          // "http://localhost:5173/",
+        if (!data) return;
 
+        socket = await socketServiceInstance.connectToSocket(
+          "http://localhost:8080/",
           data
         );
       } catch (error) {
@@ -59,7 +73,8 @@ function App() {
         socket.disconnect();
       }
     };
-  }, [role, socketServiceInstance]);
+  }, [adminRole, userRole, socketServiceInstance]);
+
   useEffect(() => {
     let countryInterval,
       prefCountryInterval,
@@ -114,7 +129,6 @@ function App() {
 
   useEffect(() => {
     const stopHeartbeat = startTokenHeartbeat();
-
     return () => {
       stopHeartbeat();
     };

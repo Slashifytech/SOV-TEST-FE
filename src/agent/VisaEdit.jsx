@@ -43,6 +43,9 @@ const VisaEdit = () => {
             message: `${agentData?.companyDetails?.businessName} ${agentData?.agId}  has resubmitted the Visa lodgment application ${applicationDataById?.applicationId} of ${applicationDataById?.visa?.country} for the student ${studentData?.studentInformation?.personalInformation?.firstName + studentData?.studentInformation?.personalInformation?.lastName} ${studentData?.studentInformation?.stId}`,
             path: "/admin/applications-review",
             recieverId: "",
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_AGENT_TO_ADMIN",
@@ -70,6 +73,9 @@ const VisaEdit = () => {
             } of ${applicationDataById?.visa?.country}   `,
             path: "/admin/applications-review",
             recieverId: "",
+            country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+            state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_STUDENT_TO_ADMIN",

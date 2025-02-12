@@ -50,6 +50,9 @@ const OfferLetterEdit = () => {
             message: `${agentData?.companyDetails?.businessName} ${agentData?.agId}    has resubmitted the offer letter application   ${applicationDataById?.applicationId} of    ${studentData?.studentInformation?.personalInformation?.firstName + studentData?.studentInformation?.personalInformation?.lastName} ${studentData?.studentInformation?.stId}`,
             path: "/admin/applications-review",
             recieverId: "",
+            country: agentData?.agentCountry,
+            state: agentData?.agentState,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_STUDENT_TO_ADMIN",
@@ -79,6 +82,9 @@ const OfferLetterEdit = () => {
             } ${applicationDataById?.offerLetter?.preferences?.institution}`,
             path: "/admin/applications-review",
             recieverId: "",
+            country: studentInfoData?.data?.studentInformation?.residenceAddress?.country,
+            state: studentInfoData?.data?.studentInformation?.residenceAddress?.state,
+            sendTo: "partner"
           };
           socketServiceInstance.socket.emit(
             "NOTIFICATION_STUDENT_TO_ADMIN",

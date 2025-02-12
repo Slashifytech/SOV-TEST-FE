@@ -88,8 +88,10 @@ class SocketService {
       localStorage.removeItem("form");
       localStorage.removeItem("userAuthToken");
 
-      if (role === "0" || role === "1" || role === "4" || role === "5") {
+      if (role === "0" || role === "1" ) {
         window.location.href = "/admin/role/auth/login";
+      } else if(role === "4" || role === "5") {
+        window.location.href = "/province/login";
       } else {
         window.location.href = "/login";
       }

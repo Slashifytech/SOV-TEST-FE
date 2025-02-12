@@ -151,7 +151,7 @@ const AgentDirectory = () => {
               </Link>
             </span>
           </span>
-          {role !== "1" && (
+          {(role !== "1" && role !== "4" && role !== "5") && (
             <span
               onClick={downloadAll}
               className="bg-primary ml-5 text-white px-4 rounded-md py-2 cursor-pointer"

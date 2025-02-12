@@ -95,7 +95,7 @@ const PartnerEmployee = () => {
               <CustomInput
                 className="h-11 md:w-96 sm:w-80 rounded-md text-body placeholder:px-3 pl-7 border border-[#E8E8E8] outline-none"
                 type="text"
-                placeHodler="Search Employee Name, Phone Number, & Email"
+                placeHodler="Search by ID, Name, Phone Number, & Email"
                 name="search"
                 value={search}
                 onChange={handleSearchChange}

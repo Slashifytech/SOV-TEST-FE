@@ -197,7 +197,7 @@ const Form2 = ({
   };
 
   const handleCountryChange = (e, type) => {
-    const country = e.target.value;
+    const country = e;
 
     const selectedCountryData = countryState.find(
       (item) => item.country === country
@@ -205,13 +205,21 @@ const Form2 = ({
     const states = selectedCountryData ? selectedCountryData.states : [];
 
     if (type === "residence") {
-      setResidenceData((prev) => ({ ...prev, country, state: "" }));
+      setResidenceData((prev) => ({ ...prev, country}));
       setResidenceFilteredStates(states);
     } else if (type === "mailing") {
-      setMailAddressData((prev) => ({ ...prev, country, state: "" }));
+      setMailAddressData((prev) => ({ ...prev, country }));
       setMailingFilteredStates(states);
     }
   };
+  useEffect(() => {
+    if (residenceData?.country) {
+      handleCountryChange(residenceData.country, "residence");
+    }
+    if (mailingAddress?.country) {
+      handleCountryChange(mailingAddress.country, "mailing");
+    }
+  }, [residenceData?.country, mailingAddress?.country]);
 
   return (
     <div className="min-h-screen">
@@ -250,8 +258,8 @@ const Form2 = ({
             </p>
             <select
               name="country"
-              onChange={(e) => handleCountryChange(e, "residence")}
               value={residenceData.country}
+              onChange={(e) => handleCountryChange(e.target.value, "residence")}
               className={`border border-gray-300 rounded-lg text-secondary px-3 py-2 outline-none w-full bg-input`}
             >
               <option value="">Select a country</option>
@@ -277,7 +285,7 @@ const Form2 = ({
               disabled={!residenceData.country}
               className={`border border-gray-300 rounded-lg text-secondary px-3 py-2 outline-none w-full bg-input`}
             >
-              <option value="">Select a state</option>
+              <option value="" hidden>{residenceData?.state ? residenceData?.state : "Select a state"}</option>
               {residenceFilteredStates.map((state, index) => (
                 <option key={index} value={state}>
                   {state}
@@ -342,11 +350,11 @@ const Form2 = ({
             </p>
             <select
               name="country"
-              onChange={(e) => handleCountryChange(e, "mailing")}
               value={mailAddressData.country}
+              onChange={(e) => handleCountryChange(e.target.value, "mailing")}
               className={`border border-gray-300 rounded-lg text-secondary px-3 py-2 outline-none w-full bg-input`}
             >
-              <option value="">Select a country</option>
+              <option value="" >Select a country</option>
               {countryState.map((item, index) => (
                 <option key={index} value={item.country}>
                   {item.country}
@@ -365,10 +373,9 @@ const Form2 = ({
               name="state"
               value={mailAddressData.state}
               onChange={(e) => handleInput(e, setMailAddressData)}
-              disabled={!residenceData.country}
               className={`border border-gray-300 rounded-lg text-secondary px-3 py-2 outline-none w-full bg-input`}
             >
-              <option value="">Select a state</option>
+              <option value="" hidden>{mailAddressData?.state ? mailAddressData?.state : "Select a state"}</option>
               {residenceFilteredStates.map((state, index) => (
                 <option key={index} value={state}>
                   {state}

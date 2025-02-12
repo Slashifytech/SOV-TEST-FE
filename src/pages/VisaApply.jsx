@@ -58,18 +58,18 @@ const initialStudentDocument = {
 };
 
 const VisaApply = () => {
+  const location = useLocation();
   const role = localStorage.getItem("role");
   const [newFiles, setNewFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletedFiles, setDeletedFiles] = useState([]);
   const { agentData } = useSelector((state) => state.agent);
   const studentUserId = useSelector((state) => state.student.studentInfoData);
-  const location = useLocation();
-
+console.log(location)
   const studentId =
     role === "3"
       ? studentUserId?.data?.studentInformation?._id
-      : location?.state?.id || location?.state?.state?.id;
+      : location?.state?.id || location?.state?.state?.id || location?.state?.state
   const { countryOption, studentData } = useSelector((state) => state.general);
   const { studentInfoData } = useSelector((state) => state.student);
   const StudentDataToGet = role === "2" ? studentData : studentInfoData?.data;

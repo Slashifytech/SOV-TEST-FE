@@ -54,8 +54,8 @@ const AdminSidebar = () => {
   const [isLogoutOpen, setisLogoutOpen] = useState(false);
 
   const sidebarList = [
-    { pathPage: "/admin/dashboard", icon: <BsPieChartFill />, label: "Dashboard", otherPath: "/admin/province/add-employee" },
-    { pathPage: "/admin/province/employee-lists", icon: <ImUsers />, label: "Employees", otherPath: "/admin/edit-employee" },
+    { pathPage: "/admin/dashboard", icon: <BsPieChartFill />, label: "Dashboard" },
+    { pathPage: "/admin/province/employee-lists", icon: <ImUsers />, label: "Employees", otherPath: "/admin/edit-employee", otherPathTwo: "/admin/province/add-employee" },
     { pathPage: "/admin/partner-directory", icon: <FaHandsHelping />, label: "Assign Partners", otherPath: "/admin/add-partner",  otherPathThree: "/admin/partner-employee", otherPathTwo: "/admin/partner-employee-details"},
     { pathPage: "/admin/team-members", icon: <RiTeamFill />, label: "Team Members", otherPath: "/admin/add-member", otherPathTwo: "/admin/team-activity" },
     { pathPage: "/admin/institute", icon: <BsFillBuildingsFill />, label: "Institutions", otherPath: "/add-institute", otherPathTwo: "/institute-view" },
@@ -72,7 +72,7 @@ const AdminSidebar = () => {
       return !(
         ((role === "0" || role === "5") && item.label === "Employees") ||
 
-        (role === "1" && ["Team Members", "Employees"].includes(item.label)) ||
+        (role === "1" && ["Team Members", "Employees","Assign Partners" ].includes(item.label)) ||
 
         ((role === "4" || role === "5") && ["Air Ticket", "Institutions", "Assign Partners", "Team Members"].includes(item.label))
       );
@@ -104,7 +104,7 @@ const AdminSidebar = () => {
         {filteredSidebarList.map((item, index) => (
           <SidebarItem key={index} item={item} path={path} onClick={handleDispatch} />
         ))}
-        {role === "0" && (
+        {(role === "0" || role === "1") && (
           <div className={`cursor-pointer py-4 hover:bg-[#FBD5D5] hover:text-primary hover:border-l-4 hover:font-medium ${path === "/admin/ticket" ? "bg-[#FBD5D5] text-primary border-l-4 border-primary font-medium" : "text-sidebar"}`}>
             <Link to="/admin/ticket" className="flex items-center gap-3 md:pl-6 lg:px-6 sm:pl-6">
               <span className="text-[20px]"><BsFillTicketPerforatedFill /></span>
