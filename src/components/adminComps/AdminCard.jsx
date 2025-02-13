@@ -26,6 +26,7 @@ const AdminCard = ({
   instituteData,
   mgdbId,
   agentId,
+  refferedBy
 }) => {
   const { getAdminProfile } = useSelector((state) => state.admin);
 
@@ -34,13 +35,15 @@ const AdminCard = ({
   const closePopUp = () => setIsOpen(false);
   const openPopUp = () => setIsOpen(true);
 
+  
   return (
     <>
       <div className="bg-white  font-poppins flex flex-row justify-between md:items-center sm:items-start  w-full px-6 py-6 ">
         <span className="w-70 flex flex-col items-start ">
           {isApproval ? null : (
             <span className="font-normal text-body sm:text-[13px] md:text-[15px]">
-              {apId}
+              {apId},{" "} {refferedBy !=="Direct" ? `Referred By: (${refferedBy})` : "Direct"}
+
             </span>
           )}
 

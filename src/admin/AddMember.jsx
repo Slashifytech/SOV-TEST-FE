@@ -477,7 +477,7 @@ const AddMember = () => {
                 <span className="flex flex-col">
                   <span className="text-[14px] text-secondary ">
                     {" "}
-                    First Name *
+                    { location.pathname === "/admin/add-partner" ? "Company Name *"  :   "First Name *"}
                   </span>{" "}
                   <CustomInput
                     name="firstName"
@@ -519,7 +519,7 @@ const AddMember = () => {
                 <span className="flex flex-col">
                   <span className="text-[14px] text-secondary ">
                     {" "}
-                    Last Name *
+                    { location.pathname === "/admin/add-partner" ? "Owner Name *"  :   "Last Name *"}
                   </span>{" "}
                   <CustomInput
                     name="lastName"

@@ -81,3 +81,6 @@ export const removeDuplicates = (options) => {
     return !isDuplicate;
   });
 };
+export function getFirstWord(str) {
+  return str.split(" ")[0] || ""; 
+}

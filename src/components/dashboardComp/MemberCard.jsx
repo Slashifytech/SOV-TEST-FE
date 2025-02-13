@@ -45,7 +45,7 @@ const MemberCard = ({
           />
           <span className="flex flex-col">
             <span className="text-sidebar text-[14px] font-medium ">
-              {name?.slice(0, 24) || "NA"}
+              {name?.slice(0, 28) || "NA"}
             </span>
 
             <span

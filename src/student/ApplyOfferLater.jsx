@@ -117,7 +117,6 @@ import { createSprinklesEffect } from "../components/SprinklesParty";
 const ApplyOfferLater = () => {
   const role = localStorage.getItem("role");
   const studentUserId = useSelector((state) => state.student.studentInfoData);
-  // const { agentData } = useSelector((state) => state.agent);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { agentData } = useSelector((state) => state.agent);
 
@@ -126,6 +125,7 @@ const ApplyOfferLater = () => {
     role === "3"
       ? studentUserId?.data?.studentInformation?._id
       : location?.state?.id || location?.state;
+ 
   const { courses } = useSelector((state) => state.general);
   const { countryOption, studentData, prefCountryOption } = useSelector(
     (state) => state.general
@@ -519,6 +519,9 @@ const ApplyOfferLater = () => {
           url: updatedEducationDetails.certificate?.url || [],
         },
         studentInformationId: studentId,
+        ...(role === "3" && { 
+          refferedLocation: studentUserId?.data?.studentInformation?.residenceAddress?.state
+        }),
       };
 
       // Add scores if present

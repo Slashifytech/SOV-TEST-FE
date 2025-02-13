@@ -1434,7 +1434,7 @@ export function CustomTableEight({
           <thead>
             <tr>
               {tableHead.map((head) => {
-                if (head === "Action" && role === "1") {
+                if (head === "Action" && (role === "1" || role === "5")) {
                   return null;
                 }
                 return (
@@ -1549,7 +1549,7 @@ export function CustomTableEight({
                     </Typography>
                   </td>
                 )}
-                {role !== "1" && (
+                {(role === "0" || role === "4") && (
                   <td className="">
                     <Typography
                       as="a"

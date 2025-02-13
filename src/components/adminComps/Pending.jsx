@@ -256,6 +256,7 @@ const Pending = ({ data }) => {
                 instituteData={application}
                 sectionData={application?.type}
                 pageType="application"
+                refferedBy={application?.referredBy}
               />
             </div>
           ))

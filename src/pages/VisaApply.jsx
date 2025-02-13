@@ -65,7 +65,7 @@ const VisaApply = () => {
   const [deletedFiles, setDeletedFiles] = useState([]);
   const { agentData } = useSelector((state) => state.agent);
   const studentUserId = useSelector((state) => state.student.studentInfoData);
-console.log(location)
+
   const studentId =
     role === "3"
       ? studentUserId?.data?.studentInformation?._id
@@ -343,6 +343,9 @@ console.log(location)
       const updatedStudentDocument = {
         country: countryName,
         studentInformationId: studentId,
+        ...(role === "3" && { 
+          refferedLocation: studentUserId?.data?.studentInformation?.residenceAddress?.state
+        }),
         personalDetails: {
           ...visaLetter.personalDetails,
         },

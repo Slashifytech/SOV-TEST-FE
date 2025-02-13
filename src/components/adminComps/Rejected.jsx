@@ -72,7 +72,7 @@ const Rejected = ({ data }) => {
                     : "Unknown type"
                 }
               pageType="application"
-
+              refferedBy={application?.referredBy}
               />
             </div>
           ))

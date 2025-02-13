@@ -72,11 +72,11 @@ const Header = ({ icon, customLink, iconTwo }) => {
                       " " +
                       studentInfoData?.data?.studentInformation
                         ?.personalInformation?.lastName
-                    : (adminRole === "0" || adminRole === "1" || adminRole === "4" ||  adminRole ==="5")
+                    : (adminRole === "0" || adminRole === "1"  ||  adminRole ==="5")
                     ? getAdminProfile?.data?.firstName +
                       " " +
                       getAdminProfile?.data?.lastName
-                    : null}
+                    : adminRole === "4" ? getAdminProfile?.data?.firstName : null}
                 </span>
     
                 <span className="font-light text-[13px]">

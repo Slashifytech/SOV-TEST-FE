@@ -385,6 +385,9 @@ const courseFeeApplication = () => {
         Object.entries({
           ...courseFee,
           studentInformationId: studentId,
+          ...(role === "3" && { 
+            refferedLocation: studentUserId?.data?.studentInformation?.residenceAddress?.state
+          }),
         }).filter(([key, value]) => {
           if (key === "parentDocument" || key === "siblingsDocument") {
             return Object.values(value).some((v) => v); // Keep only if there's at least one non-empty value
