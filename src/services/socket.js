@@ -61,7 +61,6 @@ class SocketService {
       store.dispatch(addAllNotifications(data));
     });
 
-    
     this.socket.on("GET_NOTIFICATIONS_FOR_ADMIN", (data) => {
       console.log("GET_NOTIFICATIONS_FOR_ADMIN:", data);
       this.socket.emit("GET_UNREAD_COUNT", "emitForAdmin");
@@ -88,9 +87,9 @@ class SocketService {
       localStorage.removeItem("form");
       localStorage.removeItem("userAuthToken");
 
-      if (role === "0" || role === "1" ) {
+      if (role === "0" || role === "1") {
         window.location.href = "/admin/role/auth/login";
-      } else if(role === "4" || role === "5") {
+      } else if (role === "4" || role === "5") {
         window.location.href = "/province/login";
       } else {
         window.location.href = "/login";
@@ -105,7 +104,22 @@ class SocketService {
     this.socket.on("GLOBAL_NOTIFICATION_PARTNER_ALERT", (data) => {
       console.log("GLOBAL_NOTIFICATION_PARTNER_ALERT:", data);
       this.socket.emit("GET_UNREAD_COUNT", "emitForPartner");
-      store.dispatch(addNewNotification(data));
+      const state = store.getState();
+
+      const roleType = state.admin?.getAdminProfile?.data?.role;
+      const province =
+        roleType === "5"
+          ? state.admin.getAdminProfile?.data?.regionData
+          : state.admin.getAdminProfile?.data?.residenceAddress?.state;
+
+      if (
+        data?.state !== province?.toLowerCase() &&
+        (roleType === "4" || roleType === "5")
+      ) {
+        return;
+      } else {
+        store.dispatch(addNewNotification(data));
+      }
     });
     this.socket.on("GLOBAL_NOTIFICATION_ADMIN_ALERT", (data) => {
       console.log("GLOBAL_NOTIFICATION_ADMIN_ALERT:", data);
@@ -116,8 +130,23 @@ class SocketService {
     //this event is to get the notificationCount
     this.socket.on("GET_UNREAD_COUNT", (data) => {
       console.log("GET_UNREAD_COUN:", data);
-      store.dispatch(updateNotificationCount(data));
-      
+
+      const state = store.getState();
+
+      const roleType = state.admin?.getAdminProfile?.data?.role;
+      const province =
+        roleType === "5"
+          ? state.admin.getAdminProfile?.data?.regionData
+          : state.admin.getAdminProfile?.data?.residenceAddress?.state;
+
+      if (
+        data?.state !== province?.toLowerCase() &&
+        (roleType === "4" || roleType === "5")
+      ) {
+        return;
+      } else {
+        store.dispatch(updateNotificationCount(data));
+      }
     });
 
     this.socket.on("NOTIFICATION_READ_STATUS_UPDATE", (data) => {
@@ -138,11 +167,8 @@ class SocketService {
   }
 
   disconnectSocket() {
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
-      console.log("Socket disconnected");
-    }
+    this.socket?.disconnect();
+    console.log("Socket disconnected");
   }
 
   sendMessage = async (eventType, dataObj) => {
@@ -161,3 +187,8 @@ class SocketService {
 
 const socketServiceInstance = new SocketService();
 export default socketServiceInstance;
+
+
+
+
+// [] = [] 

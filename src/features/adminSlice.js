@@ -23,6 +23,8 @@ import {
   getUrlData,
   profileById,
 } from "./adminApi";
+import { resetStore } from "./action";
+
 
 // Async thunk to fetch agent data
 export const applicationForApproval = createAsyncThunk(
@@ -404,37 +406,38 @@ export const fetchAdminProfileById = createAsyncThunk(
     }
   }
 );
+const initialState = {
+  approvals: [],
+  applications: [],
+  tabType: "",
+  status: "idle",
+  error: null,
+  updateState: false,
+  updateTicketTab: "underreview",
+  agentProfile: "",
+  ticketAll: [],
+  ticketById: "",
+  getAllAgentData: [],
+  getAllStudentData: [],
+  getStudentDataById: null,
+  getAdminProfile: null,
+  getApplicationOverview: null,
+  getUrlData: [],
+  allInstitutes: null,
+  instituteById: null,
+  getTeams: null,
+  getMember: null,
+  getApplicationActivityData: null,
+  getTicketActivityData: null,
+  getApprovalActivityData: null,
+  airTickets: null,
+  getAirTicketById: null,
+  PartnersData: null,
+  profileById: null
+}
 const adminSlice = createSlice({
   name: "admin",
-  initialState: {
-    approvals: [],
-    applications: [],
-    tabType: "",
-    status: "idle",
-    error: null,
-    updateState: false,
-    updateTicketTab: "underreview",
-    agentProfile: "",
-    ticketAll: [],
-    ticketById: "",
-    getAllAgentData: [],
-    getAllStudentData: [],
-    getStudentDataById: null,
-    getAdminProfile: null,
-    getApplicationOverview: null,
-    getUrlData: [],
-    allInstitutes: null,
-    instituteById: null,
-    getTeams: null,
-    getMember: null,
-    getApplicationActivityData: null,
-    getTicketActivityData: null,
-    getApprovalActivityData: null,
-    airTickets: null,
-    getAirTicketById: null,
-    PartnersData: null,
-    profileById: null
-  },
+  initialState,
   reducers: {
     setTabType: (state, action) => {
       state.updateState = !state.updateState;
@@ -584,7 +587,6 @@ const adminSlice = createSlice({
       })
       .addCase(adminUrlData.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log(action);
 
         state.getUrlData = action.payload;
       })
@@ -731,7 +733,9 @@ const adminSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || action.error.message;
         state.profileById = []
-      });
+      })
+      .addCase(resetStore, () => initialState); 
+      
   },
 });
 export const {

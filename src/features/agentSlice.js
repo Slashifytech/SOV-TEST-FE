@@ -10,6 +10,8 @@ import {
   getStudentApplication,
   shortlistGet,
 } from "./agentApi";
+import { resetStore } from "./action";
+
 
 export const agentInformation = createAsyncThunk(
   "agents/agentInformation",
@@ -141,21 +143,22 @@ export const fetchAllVisaByAgent = createAsyncThunk(
   }
 );
 // Create the slice for agent data management
+const initialState = {
+  agentData: [],
+  shortlisted: [],
+  totalStudents: [],
+  applicationDataById: null,
+  applicationOverviewData: null,
+  studentApplicationData: null,
+  applications: null,
+  studentCount: null,
+  agentVisas: null,
+  status: "idle",
+  error: null,
+}
 const agentSlice = createSlice({
   name: "agent",
-  initialState: {
-    agentData: [],
-    shortlisted: [],
-    totalStudents: [],
-    applicationDataById: null,
-    applicationOverviewData: null,
-    studentApplicationData: null,
-    applications: null,
-    studentCount: null,
-    agentVisas: null,
-    status: "idle",
-    error: null,
-  },
+ initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -259,7 +262,9 @@ const agentSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || action.error.message;
         state.agentVisas = null
-      });
+      })
+         .addCase(resetStore, () => initialState); 
+      
   },
 });
 

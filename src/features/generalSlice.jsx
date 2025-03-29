@@ -16,6 +16,8 @@ import {
   prefferedCountry,
   recieveDocument,
 } from "./generalApi";
+import { resetStore } from "./action";
+
 
 export const getCountryOption = createAsyncThunk(
   "general/getCountryOption",
@@ -256,27 +258,28 @@ export const fetchCountryState = createAsyncThunk(
     }
   }
 );
+const initialState = {
+  countryOption: [],
+  prefCountryOption: [],
+  instituteOption: [],
+  courses: [],
+  popularCourse: [],
+  studentData: null,
+  getAllTicket: [],
+  visaStatus: [],
+  getAllDocuments: [],
+  recieveDocs: [],
+  withdrawalData: "",
+  airTickets: null,
+  airTicketById: null,
+  instituteData: null,
+  countryState: [],
+  status: "idle",
+  error: null,
+}
 const generalSlice = createSlice({
   name: "general",
-  initialState: {
-    countryOption: [],
-    prefCountryOption: [],
-    instituteOption: [],
-    courses: [],
-    popularCourse: [],
-    studentData: null,
-    getAllTicket: [],
-    visaStatus: [],
-    getAllDocuments: [],
-    recieveDocs: [],
-    withdrawalData: "",
-    airTickets: null,
-    airTicketById: null,
-    instituteData: null,
-    countryState: [],
-    status: "idle",
-    error: null,
-  },
+  initialState,
   reducers: {
     // Add a reducer to remove a university optimistically (immediate UI update)
     removeShortlistedUniversity: (state, action) => {
@@ -486,7 +489,8 @@ const generalSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || action.error.message;
         state.countryState = [];
-      });
+      })
+      .addCase(resetStore, () => initialState); 
   },
 });
 export const { clearInstituteOption, emptyAirTicket, emptyData } =

@@ -29,7 +29,7 @@ const PartnerLogin = () => {
     const { name, value } = e.target;
     setIsLogin((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: name === "email" ? value.toLowerCase() : value,
     }));
   };
 

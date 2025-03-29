@@ -29,7 +29,8 @@ const Form3 = ({
   const role = localStorage.getItem("role");
   const location = useLocation();
   const { getStudentDataById } = useSelector((state) => state.admin);
-  const { prefCountryOption, courses } = useSelector((state) => state.general);
+  const { prefCountryOption, popularCourse } = useSelector((state) => state.general);
+    const courses = popularCourse;
   const IdToAddStudent = location?.state?.id?.id;
   const { instituteOption } = useSelector((state) => state.general);
   const studentInfoData = useSelector((state) => state.student.studentInfoData);
@@ -223,14 +224,28 @@ const Form3 = ({
             errors={errors.preferredState}
           />
 
-          <InstituteComponent
-            name="preferredInstitution"
-            label="Preferred Institution"
-            customClass="bg-input"
-            options={instituteOption}
-            value={preferenceData.preferredInstitution}
-            handleChange={handleInput}
-          />
+         
+              <div className="flex flex-col mb-4 mt-6 font-poppins">
+            <label className="font-normal text-secondary mb-2 text-[14px]">
+            Preferred Institution
+            </label>
+            <select
+                   name="preferredInstitution"
+                   label="Preferred Institution"
+                   value={preferenceData.preferredInstitution}
+                   onChange={handleInput}
+              className={`border border-gray-300 bg-input text-secondary rounded-md px-3 py-2 outline-none `}
+            >
+              <option className="text-secondary font-poppins" value="">
+                Select Options
+              </option>
+              {instituteOption?.instituteNames?.map((option, index) => (
+                <option className="text-secondary" key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
           {errors.preferredInstitution && (
             <p className="text-red-500 mt-1 text-sm">
               {errors.preferredInstitution}
@@ -240,7 +255,7 @@ const Form3 = ({
           <SelectComponent
             name="preferredProgram"
             label="Preferred Program"
-            options={courses}
+            
             value={preferenceData.preferredProgram}
             handleChange={handleInput}
           />

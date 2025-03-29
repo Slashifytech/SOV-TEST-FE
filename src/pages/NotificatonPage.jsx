@@ -89,11 +89,10 @@ const NotificationPage = () => {
   };
 
   const fetchNotifications = useCallback(() => {
-    if (isLoading || noMoreNotifications) {
+    if (isLoading ) {
       console.log("returning");
     }
     setIsLoading(true);
-    console.log("fire");
     const eventName =
       role === "0" || role === "1"
         ? "GET_NOTIFICATIONS_FOR_ADMIN"

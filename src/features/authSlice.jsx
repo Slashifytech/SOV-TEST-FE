@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {jwtDecode} from "jwt-decode"; 
 import { loginUser } from "./authApi";
 import { useDispatch } from "react-redux";
+import { resetStore } from "./action";
+
 
 // Thunk to handle user login
 export const loginUserData = createAsyncThunk(
@@ -15,15 +17,15 @@ export const loginUserData = createAsyncThunk(
     }
   }
 );
-
+ const initialState = {
+  userData: null,
+  userId: null,
+  status: "idle",
+  error: null,
+}
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    userData: null,
-    userId: null,
-    status: "idle",
-    error: null,
-  },
+ initialState,
   reducers: {
     // Logout reducer
     logout(state) {
@@ -60,7 +62,8 @@ const authSlice = createSlice({
       .addCase(loginUserData.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Login failed"; 
-      });
+      })
+      .addCase(resetStore, () => initialState); 
   },
 });
 

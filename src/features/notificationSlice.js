@@ -1,18 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { store } from "./store";
+import { resetStore } from "./action";
 
+const   initialState = {
+  notifications: [],
+  notificationCount: 0,
+  currentPage: 0,
+  nextPage: 0,
+  totalPage: 0,
+  totalNotification: 0,
+  status: "idle",
+  error: null,
+}
 const notificationsSlice = createSlice({
   name: "notifications",
-  initialState: {
-    notifications: [],
-    notificationCount: 0,
-    currentPage: 0,
-    nextPage: 0,
-    totalPage: 0,
-    totalNotification: 0,
-    status: "idle",
-    error: null,
-  },
+   initialState,
   reducers: {
     removeNotification: (state, action) => {
       state.notifications = state.notifications.filter(
@@ -51,7 +52,7 @@ const notificationsSlice = createSlice({
       state.notifications = [...state.notifications, ...uniqueNotifications];
     },
     updateNotificationCount: (state, action) => {
-      state.notificationCount = action.payload;
+      state.notificationCount = action.payload.unreadCount;
     },
     addOneCountToNotification: (state) => {
       state.notificationCount += 1;
@@ -61,13 +62,9 @@ const notificationsSlice = createSlice({
     },
     addNewNotification: (state, action) => {
       
-    const roleType =  store.getState().admin.getAdminProfile.data.role;
-     const country =   store.getState().admin.getAdminProfile.data?.residenceAddress?.country;
-     const province = store.getState().admin.getAdminProfile.data?.residenceAddress?.state;
+
       const notification = action.payload;
-   if(notification?.country !== country && notification.state !== province && (roleType === "4" || roleType === "5")){
-   return 
-   }
+
       const isDuplicate = state.notifications.some(
         (existingNotification) => existingNotification._id === notification._id
       );
@@ -82,6 +79,9 @@ const notificationsSlice = createSlice({
       }));
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(resetStore, () => initialState); 
+  }
 });
 
 export const {

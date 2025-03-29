@@ -214,7 +214,7 @@ const Dashboard = () => {
             <>
               <StatusComp
                 statusOne={
-                  studentInfoData?.data?.studentInformation?.pageCount === 3
+                  studentInfoData?.data?.studentInformation?.pageStatus?.status === "completed"
                     ? "done"
                     : "pending"
                 }

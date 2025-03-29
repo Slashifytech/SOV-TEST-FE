@@ -109,7 +109,7 @@ const Institution = () => {
           country: filterData.country,
           inTake: filterData.inTake,
           search: filterData.search,
-          institute: filterData.institutes,
+          institute: filterData.institutes || undefined,
         })
       );
     }

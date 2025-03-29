@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../features/authSlice";
+import socketServiceInstance from "../../services/socket";
+import { resetStore } from "../../features/action";
 
 const LogoutPop = ({ isLogoutOpen, closeLogout }) => {
   const dispatch = useDispatch();
@@ -11,11 +13,15 @@ const LogoutPop = ({ isLogoutOpen, closeLogout }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(resetStore());
     localStorage.removeItem("student");
     localStorage.removeItem("userAuthToken");
     localStorage.removeItem("form");
     localStorage.removeItem("role");
 
+      socketServiceInstance.disconnectSocket();
+      console.log("disconnected")
+    
 
     if (role === "0" || role === "1") {
       navigate("/admin/role/auth/login");
@@ -26,6 +32,8 @@ const LogoutPop = ({ isLogoutOpen, closeLogout }) => {
     }
     closeLogout();
   };
+
+
 
   useEffect(() => {
     if (isLogoutOpen) {

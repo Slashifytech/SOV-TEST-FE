@@ -57,7 +57,6 @@ const Applications = () => {
   for (let i = 10; i <= Math.min(totalUsersCount, 100); i += 10) {
     perPageOptions.push(i);
   }
-  console.log(search);
   useEffect(() => {
     dispatch(applictionOverview({ search, perPage, page }));
   }, [dispatch, search, perPage, page]);

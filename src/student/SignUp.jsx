@@ -84,7 +84,8 @@ const SignUp = () => {
         [name]: validName,
       }));
     } else if (name === "email") {
-      const validEmail = value.replace(/\s/g, "");
+      const validEmail = value?.toLowerCase()?.replace(/\s/g, "");
+      
       setStudentRegister((prevData) => ({
         ...prevData,
         [name]: validEmail,

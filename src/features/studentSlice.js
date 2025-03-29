@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getApplicationList, getPersonalInfo, getStudentInfo } from "./studentApi";
+import { resetStore } from "./action";
 
 export const getStudentData = createAsyncThunk(
   "students/getStudentData",
@@ -36,17 +37,17 @@ export const getApplications = createAsyncThunk(
     }
   }
 );
-
+const initialState = {
+  studentInformation: [],
+  studentInfoData: [],
+  studentOtp: null,
+  applicationData: [],
+  status: "idle",
+  error: null,
+}
 const studentSlice = createSlice({
   name: "student",
-  initialState: {
-    studentInformation: [],
-    studentInfoData: [],
-    studentOtp: null,
-    applicationData: [],
-    status: "idle",
-    error: null,
-  },
+  initialState,
   reducers: {
     setStudentOtp: (state, action) => {
       state.studentOtp = action.payload;
@@ -93,7 +94,8 @@ const studentSlice = createSlice({
       .addCase(getApplications.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || action.error.data.message;
-      });
+      })
+      .addCase(resetStore, () => initialState); 
   },
 });
 

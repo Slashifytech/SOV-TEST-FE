@@ -68,11 +68,10 @@ import AirTickets from "../pages/AirTickets";
 import AirTicketLists from "../admin/AirTicketLists";
 import AllVisa from "../agent/AllVisa";
 import PartnerList from "../admin/PartnerLists";
-import PartnerLogin from "../partner/partnerLogin";
 import StrictPartner from "./StrictPartner";
 import PartnerEmployee from "../admin/PartnerEmployee";
 import PartnerEmployeeDetail from "../admin/PartnerEmployeeDetail";
-
+import PartnerLogin from "../partner/PartnerLogin"
 export const router = createBrowserRouter([
   {
     path: "/",

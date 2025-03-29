@@ -80,7 +80,7 @@ const AgentSignUp = () => {
     const { name, value } = e.target;
     let sanitizedValue = value;
     if (name.includes("email")) {
-      sanitizedValue = sanitizedValue.replace(/\s/g, "");
+      sanitizedValue = sanitizedValue?.toLowerCase()?.replace(/\s/g, ""); 
     }
     if (name === "primaryContactPerson.name") {
       sanitizedValue = sanitizedValue.replace(/[^a-zA-Z\s]/g, "");

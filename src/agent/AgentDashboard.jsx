@@ -120,7 +120,6 @@ const handleDonoughtChange = (e) => {
     try {
       const res = await getAllCompletedApplication();
       setCompletedApplication(res);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -133,7 +132,6 @@ const handleDonoughtChange = (e) => {
         year
       );
       setAppOverviewCount(res);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -146,7 +144,6 @@ const handleDonoughtChange = (e) => {
         selectedYearLine
       );
       setStudentCount(res);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -159,7 +156,6 @@ const handleDonoughtChange = (e) => {
         selectedYearBar
       );
       setAppCount(res);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }

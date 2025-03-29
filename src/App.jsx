@@ -38,9 +38,9 @@ function App() {
     : studentInfoData?.data?.studentInformation
     ? "3"
     : null;
+    console.log(userRole)
   useEffect(() => {
     if (!socketServiceInstance) {
-      console.log("role not found", userRole);
       return;
     }
 

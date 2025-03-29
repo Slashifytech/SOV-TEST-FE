@@ -135,7 +135,7 @@ const AddMember = () => {
       const validEmail = value.trim();
       setMemberData((prevData) => ({
         ...prevData,
-        [name]: validEmail,
+        [name]: validEmail?.toLowerCase(),
       }));
     } else if (name === "confirmPassword") {
       setConfirmPassword(value);

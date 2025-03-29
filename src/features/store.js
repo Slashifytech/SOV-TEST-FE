@@ -1,4 +1,3 @@
-import { configureStore } from "@reduxjs/toolkit";
 
 import stepperReducer from "./Regslice";
 import studentReducer from "./studentSlice";
@@ -7,6 +6,10 @@ import authReducer from "./authSlice";
 import agentReducer from "./agentSlice"
 import adminReducer from "./adminSlice";
 import notificationsReducer from "./notificationSlice"
+import { configureStore } from "@reduxjs/toolkit";
+
+
+
 export const store = configureStore({
   reducer: {
     stepper: stepperReducer,
